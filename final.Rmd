@@ -48,26 +48,9 @@ Bejaia_frecuencias <- Bejaia %>%
 ```
 Tras hacer las frecuencias, vemos que el 52% de los días no hubieron incendios y el 48% de los días sí.
 
-Ahora vamos a determinar qué factores contribuyen a los incendios. Empezaremos con la lluvia
+Correlacion entre la temperatura en Bejaia y la severidad de la sequía cuando hay incendios (DC)
 ```{r}
-lluvia_media_Bf <- Bejaia_fire %>% 
-  summarize(máximo = max(Rain),
-            mínimo = min(Rain),
-            media = mean(Rain),
-            var = mean((Rain - media)^2),
-            sd = sqrt(var)
-            );lluvia_media_Bf
-lluvia_media_Bnf <- Bejaia_not_fire%>% 
-  summarize(máximo = max(Rain),
-            mínimo = min(Rain),
-            media = mean(Rain),
-            mediana = median(Rain),
-            var = mean((Rain - media)^2),
-            sd = sqrt(var),
-            CV = sd/media,
-            DV = mean(sum(Rain-mediana))
-            );lluvia_media_Bnf
-
+cor(Bejaia_fire$Temperature, Bejaia_fire$DC)
 ```
 
 vamos a ver cuantos días hubieron lluvia o no en Sidi-Bel_Abbes 
