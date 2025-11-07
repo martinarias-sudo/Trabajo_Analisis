@@ -22,3 +22,20 @@ tabla <- tabla %>%
 ```
 
 Seleccionar sólo Bejaia de la base de datos así como si hubo incendio o no
+```{r}
+# Now filter for Bejaia
+Bejaia <- tabla %>% 
+  filter(Region == "Bejaia")
+
+# If you want only Bejaia AND fire:
+Bejaia_fire <- Bejaia %>%
+  filter(Classes == "fire")
+Bejaia_not_fire <- Bejaia %>% 
+  filter(Classes == "not fire")
+```
+
+vemos como quedan los datos
+```{r}
+ggplot(Bejaia, aes(Classes, fill = Classes))+
+  geom_bar()
+```
