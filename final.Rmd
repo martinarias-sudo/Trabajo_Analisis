@@ -39,3 +39,34 @@ vemos como quedan los datos
 ggplot(Bejaia, aes(Classes, fill = Classes))+
   geom_bar()
 ```
+Hay casi la misma cantidad de días con fuego que sin fuego
+```{r}
+Bejaia_frecuencias <- Bejaia %>% 
+  group_by(Classes) %>% 
+  summarise(ni = n()) %>% 
+  mutate(fi = round(ni/sum(ni), 4)) %>% 
+  mutate(fi_porc = round(fi*100, 2));Bejaia_frecuencias
+```
+Tras hacer las frecuencias, vemos que el 52% de los días no hubieron incendios y el 48% de los días sí.
+
+Ahora vamos a determinar qué factores contribuyen a los incendios. Empezaremos con la lluvia
+```{r}
+lluvia_media_Bf <- Bejaia_fire %>% 
+  summarize(máximo = max(Rain),
+            mínimo = min(Rain),
+            media = mean(Rain),
+            var = mean((Rain - media)^2),
+            sd = sqrt(var)
+            );lluvia_media_Bf
+lluvia_media_Bnf <- Bejaia_not_fire%>% 
+  summarize(máximo = max(Rain),
+            mínimo = min(Rain),
+            media = mean(Rain),
+            mediana = median(Rain),
+            var = mean((Rain - media)^2),
+            sd = sqrt(var),
+            CV = sd/media,
+            DV = mean(sum(Rain-mediana))
+            );lluvia_media_Bnf
+
+```
