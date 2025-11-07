@@ -1,2 +1,24 @@
-#Pon algo de código
-library(ggplot)
+---
+title: "proyecto_final"
+output: html_document
+date: "2025-11-05"
+---
+
+Cargar las librerías y la base de datos y limpiarla
+```{r}
+library(dplyr)
+library(ggplot2)
+library(modeest)
+library(stringr)
+
+tabla <- read.csv("bd1_8.csv", sep=";", header= TRUE)
+head(tabla)
+
+
+# Clean the data by trimming whitespace
+tabla <- tabla %>%
+  mutate(across(where(is.character), ~trimws(.)))
+
+```
+
+Seleccionar sólo Bejaia de la base de datos así como si hubo incendio o no
