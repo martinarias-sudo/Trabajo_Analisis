@@ -3,7 +3,6 @@ title: "proyecto_final"
 output: html_document
 date: "2025-11-05"
 ---
-
 Cargar las librerías y la base de datos y limpiarla
 ```{r}
 library(dplyr)
