@@ -102,3 +102,25 @@ ggplot(Bejaia, aes(x=Rain, y=0, color=Classes))+
 ```
 En el gráfico observamos que los días que hubieron incendios, no ha habido lluvia. En cambio, los días en los que no han habido incendios, sí ha llovido algo. Esto tiene sentido ya que si llueve, es más dificil que se produzca un incendio.
 Vemos además en que la media de lluvia de los días con fuego es de casi 0 (0.01) y los días en los que no hubieron incendios, la median es de 0.5.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Por lo que respecta a los condiciones que afectan a los incendios en Sidi son:
