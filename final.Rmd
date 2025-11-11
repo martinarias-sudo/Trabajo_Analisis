@@ -72,6 +72,7 @@ Sidi_frecuencias <- Sidi %>%
   mutate(fi_porc = round(fi*100, 2));Sidi_frecuencias
 ```
 Tras hacer las frecuencias, vemos que en Bejaia hay igualdad en días de incendios, mientras que en Sidi, casi el doble de días con fuego que sin fuego.
+Vemos además en que la media de lluvia de los días con fuego es de casi 0 (0.01) y los días en los que no hubieron incendios, la median es de 0.5.
 
 A continuación vamos a determinar qué factores contribuyen a los incendios. Puesto que hay dos regiones distintas, los factores que contribuyen a incendios varían de una zona a otra.
 
