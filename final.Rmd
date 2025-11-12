@@ -14,12 +14,10 @@ library(stringr)
 tabla <- read.csv("bd1_8.csv", sep=";", header= TRUE)
 head(tabla)
 
-
 # Limpiamos la tabla de datos
 tabla <- tabla %>%
   mutate(across(where(is.character), ~trimws(.)))
 tabla$id <- 1:nrow(tabla)
-
 ```
 
 Seleccionar sólo Bejaia de la base de datos así como si hubo incendio o no
@@ -49,7 +47,6 @@ not_fire <- tabla %>%
   filter(Classes == "not fire")
 fire <- tabla %>% 
   filter(Classes == "fire")
-
 ```
 
 Vemos como quedan los incendios en cada zona
@@ -100,11 +97,10 @@ lluvia_media_Bnf <- Bejaia_not_fire%>%
             );lluvia_media_Bnf
 ggplot(tabla, aes(x=Region, y=Rain, color=Classes))+
   geom_boxplot()
-
 ```
-En el gráfico observamos que en Bejaia, la lluvia es un factor clave para saber si hay fuego o no ya que los días en los que han habido incendios no ha llovido (0.01 es casi 0), en cambio los días en los que no ha habido incendio sí ha llovido. Por ser los datos de bejaia asimétricos a la derecha, podemos concluir que la mediana de lluvia ha sido de 0.5 (0.5>0).
+En el gráfico observamos que los días que hubieron incendios, no ha habido lluvia. En cambio, los días en los que no han habido incendios, sí ha llovido algo. Esto tiene sentido ya que si llueve, es más dificil que se produzca un incendio.
+Vemos además en que la media de lluvia de los días con fuego es de casi 0 (0.01) y los días en los que no hubieron incendios, la mediana es de 0.5.
 
-Por lo que respecta a Sidi, no queda del todo claro que la lluvia sea un factor determinista puesto que puede llover y aún así haber incendios. O no llover y haber o no incendios.
 
 
 El siguiente dato que vamos a analizar es el RH (Humedad relativa, en %)
@@ -127,15 +123,20 @@ Ahora vamos a ver como afecta DMC a los incendios
 ggplot(tabla, aes(x=Region, y=DMC, color=Classes))+
   geom_boxplot()
 ```
-En el gráfico vemos que cuando no hay incendios, los valores de DMC son más bajos que cuando hay incendios. En este caso, son parecidos, cuando hay incendios, los valores pueden estar entre 16 y casi 65, mientras que cuando no hay incendios, suelen estar por debajo de 15. DMC se ve afectado por la temperatura, humaedad relativa y lluvia.
-ggplot(Bejaia, aes(x=Rain, y=0, color=Classes))+
+En el gráfico vemos que cuando no hay incendios, los valores de DMC son más bajos que cuando hay incendios. En este caso, son parecidos las dos regiones, cuando hay incendios, los valores pueden estar entre 16 y casi 65, mientras que cuando no hay incendios, suelen estar por debajo de 15. DMC se ve afectado por la temperatura, humaedad relativa y lluvia.
+```{r}
+ggplot(tabla, aes(Rain, DMC, color=Classes))+
   geom_point()
-
+ggplot(tabla, aes(x = id)) +
+  geom_line(aes(y = Rain), color = "blue") +
+  geom_line(aes(y = DMC), color = "red")
+cor(Bejaia$DMC,Bejaia$Rain)
 ```
-En el gráfico observamos que los días que hubieron incendios, no ha habido lluvia. En cambio, los días en los que no han habido incendios, sí ha llovido algo. Esto tiene sentido ya que si llueve, es más dificil que se produzca un incendio.
-Vemos además en que la media de lluvia de los días con fuego es de casi 0 (0.01) y los días en los que no hubieron incendios, la mediana es de 0.5.
+Vemos en el gráfico de líneas que la Lluvia afecta directamente a DMC, cuando no llueve el mantillo está menos humedo y cuando llueve está más húmedo. A menor valor de DMC, mayor será la humedad. 
+En el gráfico de puntos vemos que esto es correcto, a mayor lluvia menor humedad en el mantillo y viceversa.
 
-vamos a continuar analizando los incendios en Bejaia enfocándonos ahora en la temperatura:
+
+vamos a continuar analizando los incendios pero ahora centrados en la temperatura
 ```{r}
 temperatura_media_Bf <- Bejaia_fire %>% 
   summarize(máximo = max(Temperature),
@@ -155,14 +156,34 @@ temperatura_media_Bnf <- Bejaia_not_fire%>%
             CV = sd/media,
             DV = mean(abs(Temperature-mediana))
             );temperatura_media_Bnf
-ggplot(Bejaia, aes(x=Temperature, y=0, color=Classes))+
-  geom_point()
+temperatura_media_Sf <- Sidi_fire %>% 
+  summarize(máximo = max(Temperature),
+            mínimo = min(Temperature),
+            media = mean(Temperature),
+            var = mean((Temperature - media)^2),
+            sd = sqrt(var)
+            );temperatura_media_Sf
+temperatura_media_Snf <- Sidi_not_fire%>% 
+  summarize(máximo = max(Temperature),
+            mínimo = min(Temperature),
+            media = mean(Temperature),
+            mediana = median(Temperature),
+            DM_me= mean(abs(Temperature - mediana)),
+            var = mean((Temperature - media)^2),
+            sd = sqrt(var),
+            CV = sd/media,
+            DV = mean(abs(Temperature-mediana))
+            );temperatura_media_Snf
 
+ggplot(tabla, aes(x=Region, y=Temperature, color=Classes))+
+  geom_boxplot()
 ```
 
 Tras el analisis de las temperaturas en Bejaia cuando han habido incendios y no, podemos concluir, que las altas temperaturas no indican que siempre vaya a haber incendios, ya que al igual que han habido incendios con temperaturas superiores a 30 grados, hay veces en las que en estas temperaturas no han habido incendios como se puede observar en la gráfica. 
 
 Sin embargo también podemos notar que cuanto mas bajas son las temperaturas menos incendios hay, esto se prueba observando las temperaturas minimas cuando ha habido incendio (26 Cº) y cuando no lo ha habido (22 Cº)
+
+Tas el analisis de los incendios con respecto a la temperatura en Sidi-Bel_Abbes podemos observar claras diferencias con Bejaia, en primer lugar las temperaturas en esta zona son mucho mas elevadas (tanto cuando ha habido incendios como no), además que al contrario que en Bejaia aquí las altas temperaturas por lo general si suelen conllevar siempre a la aparicion de incendios y las bajas temperaturas a la ausencia de estos tal como se observa en el gráfico.
 
 
 Ahora por lo que respecta al índice meteorológico de incendios FWI tenemos:
@@ -189,62 +210,11 @@ FWI_media_Bnf <- Bejaia_not_fire%>%
             CV = sd/media,
             DV = mean(abs(FWI-mediana))
             );FWI_media_Bnf
-
+ggplot(tabla, aes(Region, FWI, color= Classes))+
+  geom_boxplot()
 ```
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Por lo que respecta a los condiciones que afectan a los incendios en Sidi son:
-
-Por un lado tenemos la temperatura:
-Vamos a analizar los incendios en Sidi enfocándonos en esta.
-```{r}
-temperatura_media_Sf <- Sidi_fire %>% 
-  summarize(máximo = max(Temperature),
-            mínimo = min(Temperature),
-            media = mean(Temperature),
-            var = mean((Temperature - media)^2),
-            sd = sqrt(var)
-            );temperatura_media_Sf
-temperatura_media_Snf <- Sidi_not_fire%>% 
-  summarize(máximo = max(Temperature),
-            mínimo = min(Temperature),
-            media = mean(Temperature),
-            mediana = median(Temperature),
-            DM_me= mean(abs(Temperature - mediana)),
-            var = mean((Temperature - media)^2),
-            sd = sqrt(var),
-            CV = sd/media,
-            DV = mean(abs(Temperature-mediana))
-            );temperatura_media_Snf
-ggplot(Sidi, aes(x=Temperature, y=0, color=Classes))+
-  geom_point()
-
-```{r}
-ggplot(tabla, aes(Rain, DMC, color=Classes))+
-  geom_point()
-ggplot(tabla, aes(x = id)) +
-  geom_line(aes(y = Rain), color = "blue") +
-  geom_line(aes(y = DMC), color = "red")
-cor(Bejaia$DMC,Bejaia$Rain)
-```
-Vemos en el gráfico de líneas que la Lluvia afecta directamente a DMC, cuando no llueve el mantillo está menos humedo y cuando llueve está más húmedo. A menor valor de DMC, mayor será la humedad. 
-En el gráfico de puntos vemos que esto es correcto, a mayor lluvia menor humedad en el mantillo y viceversa.
-
-Tas el analisis de los incendios con respecto a la temperatura en Sidi-Bel_Abbes podemos observar claras diferencias con Bejaia, en primer lugar las temperaturas en esta zona son mucho mas elevadas (tanto cuando ha habido incendios como no), además que al contrario que en Bejaia aquí las altas temperaturas por lo general si suelen conllevar siempre a la aparicion de incendios y las bajas temperaturas a la ausencia de estos tal como se observa en el gráfico.
