@@ -3,6 +3,7 @@ title: "proyecto_final"
 output: html_document
 date: "2025-11-05"
 ---
+
 Cargar las librerías y la base de datos y limpiarla
 ```{r}
 library(dplyr)
@@ -14,41 +15,71 @@ tabla <- read.csv("bd1_8.csv", sep=";", header= TRUE)
 head(tabla)
 
 
-# Clean the data by trimming whitespace
+# Limpiamos la tabla de datos
 tabla <- tabla %>%
   mutate(across(where(is.character), ~trimws(.)))
+tabla$id <- 1:nrow(tabla)
 
 ```
 
-Seleccionar sólo Bejaia de la base de datos así como si hubo incendio o no
+
+
+filtramos la base de datos según la zona y la región
 ```{r}
-# Now filter for Bejaia
+# Filtramos por Bejaia
 Bejaia <- tabla %>% 
   filter(Region == "Bejaia")
 
-# If you want only Bejaia AND fire:
+#Filtramos por Bejaia y si hay o no incendio
 Bejaia_fire <- Bejaia %>%
   filter(Classes == "fire")
 Bejaia_not_fire <- Bejaia %>% 
   filter(Classes == "not fire")
+
+# Filtramos por Sidi
+Sidi <- tabla %>% 
+  filter(Region == "Sidi-Bel_Abbes")
+
+#Filtramos por Bejaia y si hay o no incendio
+Sidi_fire <- Sidi %>%
+  filter(Classes == "fire")
+Sidi_not_fire <- Sidi %>% 
+  filter(Classes == "not fire")
+
+#Cuando hay o no fuego
+not_fire <- tabla %>% 
+  filter(Classes == "not fire")
+fire <- tabla %>% 
+  filter(Classes == "fire")
+
 ```
 
-vemos como quedan los datos
+Vemos como quedan los incendios en cada zona
 ```{r}
-ggplot(Bejaia, aes(Classes, fill = Classes))+
+ggplot(tabla, aes(Region, fill=Classes))+
   geom_bar()
 ```
-Hay casi la misma cantidad de días con fuego que sin fuego
+Tras el gráfico, vemos que en Bejaia los días con fuego y sin fuego son casi los mismos. En cambio, en Sidi-Bel_Abbes, vemos claramente que han habido más días con incendios que sin. 
+
+Hacemos las tablas de frecuencias
 ```{r}
 Bejaia_frecuencias <- Bejaia %>% 
   group_by(Classes) %>% 
   summarise(ni = n()) %>% 
   mutate(fi = round(ni/sum(ni), 4)) %>% 
   mutate(fi_porc = round(fi*100, 2));Bejaia_frecuencias
-```
-Tras hacer las frecuencias, vemos que el 52% de los días no hubieron incendios y el 48% de los días sí.
 
-Ahora vamos a determinar qué factores contribuyen a los incendios. Empezaremos con la lluvia
+Sidi_frecuencias <- Sidi %>% 
+  group_by(Classes) %>% 
+  summarise(ni = n()) %>% 
+  mutate(fi = round(ni/sum(ni), 4)) %>% 
+  mutate(fi_porc = round(fi*100, 2));Sidi_frecuencias
+```
+Tras hacer las frecuencias, vemos que en Bejaia hay igualdad en días de incendios, mientras que en Sidi, casi el doble de días con fuego que sin fuego.
+
+A continuación vamos a determinar qué factores contribuyen a los incendios. Puesto que hay dos regiones distintas, los factores que contribuyen a incendios varían de una zona a otra.
+
+En primer lugar empezaremos analizando la zona de Bejaia. En concreto la lluvia
 ```{r}
 lluvia_media_Bf <- Bejaia_fire %>% 
   summarize(máximo = max(Rain),
@@ -57,39 +88,57 @@ lluvia_media_Bf <- Bejaia_fire %>%
             var = mean((Rain - media)^2),
             sd = sqrt(var)
             );lluvia_media_Bf
+
 lluvia_media_Bnf <- Bejaia_not_fire%>% 
   summarize(máximo = max(Rain),
             mínimo = min(Rain),
             media = mean(Rain),
             mediana = median(Rain),
+            DM_me= mean(abs(Rain - mediana)),
             var = mean((Rain - media)^2),
             sd = sqrt(var),
             CV = sd/media,
-            DV = mean(sum(Rain-mediana))
+            DV = mean(abs(Rain-mediana))
             );lluvia_media_Bnf
+ggplot(tabla, aes(x=Region, y=Rain, color=Classes))+
+  geom_boxplot()
 
 ```
+En el gráfico observamos que en Bejaia, la lluvia es un factor clave para saber si hay fuego o no ya que los días en los que han habido incendios no ha llovido (0.01 es casi 0), en cambio los días en los que no ha habido incendio sí ha llovido. Por ser los datos de bejaia asimétricos a la derecha, podemos concluir que la mediana de lluvia ha sido de 0.5 (0.5>0).
 
-vamos a ver cuantos días hubieron lluvia o no en Sidi-Bel_Abbes 
+Por lo que respecta a Sidi, no queda del todo claro que la lluvia sea un factor determinista puesto que puede llover y aún así haber incendios. O no llover y haber o no incendios.
+
+
+El siguiente dato que vamos a analizar es el RH (Humedad relativa, en %)
 ```{r}
-# Now filter for Bejaia
-Sidi <- tabla %>% 
-  filter(Region == "Sidi-Bel_Abbes")
-
-# If you want only Bejaia AND fire:
-Sidi_fire <- Sidi %>%
-  filter(Classes == "fire")
-Sidi_not_fire <- Sidi %>% 
-  filter(Classes == "not fire")
-
-ggplot(Sidi, aes(Classes, fill = Classes))+
-  geom_bar()
-
-Sidi_frecuencias <- Sidi %>% 
-  group_by(Classes) %>% 
-  summarise(ni = n()) %>% 
-  mutate(fi = round(ni/sum(ni), 4)) %>% 
-  mutate(fi_porc = round(fi*100, 2));Sidi_frecuencias
-
+ggplot(tabla, aes(x=Region, y=RH, color=Classes))+
+  geom_boxplot()
+ggplot(tabla, aes(x=Region, y=RH, color=Classes))+
+  geom_point(alpha=0.3)
 ```
-Vemos que han habido más días en los que hubieron incendios (64%) que los días en los que no hubieron
+En bejaia la humedad relativa no da mucha información, los datos no están claramente separados según si hay o no incendios. En el caso de Sidi, vemos que entre 20% y casi 50% de RH, hay fuego
+```{r}
+min_RH_sidinf <- min(Sidi_not_fire$RH);min_RH_sidinf
+```
+Vemos que entre un 20% y un 42%, podemos determinar que hay incendios en Sidi
+
+
+
+Ahora vamos a ver como afecta DMC a los incendios
+```{r}
+ggplot(tabla, aes(x=Region, y=DMC, color=Classes))+
+  geom_boxplot()
+```
+En el gráfico vemos que cuando no hay incendios, los valores de DMC son más bajos que cuando hay incendios. En este caso, son parecidos, cuando hay incendios, los valores pueden estar entre 16 y casi 65, mientras que cuando no hay incendios, suelen estar por debajo de 15. DMC se ve afectado por la temperatura, humaedad relativa y lluvia.
+
+```{r}
+ggplot(tabla, aes(Rain, DMC, color=Classes))+
+  geom_point()
+ggplot(tabla, aes(x = id)) +
+  geom_line(aes(y = Rain), color = "blue") +
+  geom_line(aes(y = DMC), color = "red")
+cor(Bejaia$DMC,Bejaia$Rain)
+```
+Vemos en el gráfico de líneas que la Lluvia afecta directamente a DMC, cuando no llueve el mantillo está menos humedo y cuando llueve está más húmedo. A menor valor de DMC, mayor será la humedad. 
+En el gráfico de puntos vemos que esto es correcto, a mayor lluvia menor humedad en el mantillo y viceversa.
+
