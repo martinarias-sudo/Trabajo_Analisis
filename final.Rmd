@@ -232,8 +232,9 @@ ggplot(tabla, aes(x = Region, y = FFMC, fill = Classes)) +
        x = "Tipo", 
        y = "FFMC") +
   theme_minimal()
-```
 
+```
+Tras ver el gráfico, podemos determinar que en ambas regiones, a partir del valor 80 de FFMC, se producen incendios, y por debajo no hay incendios.
 
  El boxplot muestra la distribución de FFMC en cada categoría
  La caja representa el 50% central de los datos, las líneas los extremos
@@ -279,19 +280,6 @@ cat("FFMC promedio por región y tipo de incendio:\n")
 print(ffmc_region)
 
 ```
-
-# Gráfico 6: FFMC por región
-```{r}
-ggplot(tabla, aes(x = Region, y = FFMC, fill = Classes)) +
-  geom_boxplot() +
-  labs(title = "FFMC por Región y Tipo de Incendio",
-       x = "Región", 
-       y = "FFMC") +
-  theme_minimal()
-```
-
-
-
 # VARIABLE 2: DC (Drought Code)  
 
 
@@ -317,6 +305,7 @@ ggplot(tabla, aes(x = Region, fill = Classes)) +
        x = "DC", 
        y = "Densidad") +
   theme_minimal()
+
 ```
 
 # Estadísticas por tipo de incendio
@@ -332,8 +321,9 @@ dc_stats <- datos %>%
   )
 print(dc_stats)
 ```
-Es un índice acumulativo que responde lentamente a las lluvias
 
+
+Es un índice acumulativo que responde lentamente a las lluvias
 
 # DC por región
 ```{r}
@@ -342,29 +332,27 @@ dc_region <- tabla %>%
   group_by(Region, Classes) %>%
   summarise(DC_Promedio = round(mean(DC), 1), .groups = 'drop')
 print(dc_region)
+
 ```
 
-# Gráfico 7: DC por región
-```{r}
-ggplot(tabla, aes(x = Region, y = DC, fill = Classes)) +
-  geom_boxplot() +
-  labs(title = "DC por Región y Tipo de Incendio",
-       x = "Región", 
-       y = "DC") +
-  theme_minimal()
-```
+
+
+
 
 # RELACIÓN ENTRE FFMC Y DC
+
+
 ```{r}
 cat("\n=== RELACIÓN ENTRE FFMC Y DC ===\n")
 correlacion <- cor(tabla$FFMC, datos$DC, use = "complete.obs")
 cat("Correlación entre FFMC y DC:", round(correlacion, 3), "\n")
+
 ```
 
 # Gráfico 5: Scatter plot FFMC vs DC
 ```{r}
-ggplot(tabla, aes(x = Region, y = DC, color = Classes)) +
-  geom_point(alpha = 0.6, size = 2) +
+ggplot(tabla, aes(x = Region, y = DC, fill = Classes)) +
+  geom_boxplot() +
   labs(title = "Relación entre FFMC y DC",
        subtitle = paste("Correlación =", round(correlacion, 3)),
        x = "FFMC (Humedad combustibles)", 
@@ -374,6 +362,8 @@ ggplot(tabla, aes(x = Region, y = DC, color = Classes)) +
 
 
 # UMBRALES CRÍTICOS
+
+
 ```{r}
 cat("\n=== UMBRALES CRÍTICOS SUGERIDOS ===\n")
 
@@ -390,7 +380,9 @@ umbral_dc <- tabla %>%
 
 cat("Umbral FFMC para riesgo de incendio:", round(umbral_ffmc, 1), "\n")
 cat("Umbral DC para riesgo de incendio:", round(umbral_dc, 1), "\n")
+
 ```
+
  Usamos el percentil 25 de días con incendios como umbral conservador 
  esto significa que el 75% de los incendios ocurrieron con valores superiores
  Es un criterio preventivo que podría ayudar en alertas tempranas
