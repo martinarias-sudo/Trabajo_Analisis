@@ -72,7 +72,6 @@ Sidi_frecuencias <- Sidi %>%
   mutate(fi_porc = round(fi*100, 2));Sidi_frecuencias
 ```
 Tras hacer las frecuencias, vemos que en Bejaia hay igualdad en días de incendios, mientras que en Sidi, casi el doble de días con fuego que sin fuego.
-Vemos además en que la media de lluvia de los días con fuego es de casi 0 (0.01) y los días en los que no hubieron incendios, la median es de 0.5.
 
 A continuación vamos a determinar qué factores contribuyen a los incendios. Puesto que hay dos regiones distintas, los factores que contribuyen a incendios varían de una zona a otra.
 
@@ -101,9 +100,64 @@ ggplot(Bejaia, aes(x=Rain, y=0, color=Classes))+
 
 ```
 En el gráfico observamos que los días que hubieron incendios, no ha habido lluvia. En cambio, los días en los que no han habido incendios, sí ha llovido algo. Esto tiene sentido ya que si llueve, es más dificil que se produzca un incendio.
-Vemos además en que la media de lluvia de los días con fuego es de casi 0 (0.01) y los días en los que no hubieron incendios, la median es de 0.5.
+Vemos además en que la media de lluvia de los días con fuego es de casi 0 (0.01) y los días en los que no hubieron incendios, la mediana es de 0.5.
+
+vamos a continuar analizando los incendios en Bejaia enfocándonos ahora en la temperatura:
+```{r}
+temperatura_media_Bf <- Bejaia_fire %>% 
+  summarize(máximo = max(Temperature),
+            mínimo = min(Temperature),
+            media = mean(Temperature),
+            var = mean((Temperature - media)^2),
+            sd = sqrt(var)
+            );temperatura_media_Bf
+temperatura_media_Bnf <- Bejaia_not_fire%>% 
+  summarize(máximo = max(Temperature),
+            mínimo = min(Temperature),
+            media = mean(Temperature),
+            mediana = median(Temperature),
+            DM_me= mean(abs(Temperature - mediana)),
+            var = mean((Temperature - media)^2),
+            sd = sqrt(var),
+            CV = sd/media,
+            DV = mean(abs(Temperature-mediana))
+            );temperatura_media_Bnf
+ggplot(Bejaia, aes(x=Temperature, y=0, color=Classes))+
+  geom_point()
+
+```
+
+Tras el analisis de las temperaturas en Bejaia cuando han habido incendios y no, podemos concluir, que las altas temperaturas no indican que siempre vaya a haber incendios, ya que al igual que han habido incendios con temperaturas superiores a 30 grados, hay veces en las que en estas temperaturas no han habido incendios como se puede observar en la gráfica. 
+
+Sin embargo también podemos notar que cuanto mas bajas son las temperaturas menos incendios hay, esto se prueba observando las temperaturas minimas cuando ha habido incendio (26 Cº) y cuando no lo ha habido (22 Cº)
 
 
+Ahora por lo que respecta al índice meteorológico de incendios FWI tenemos:
+```{r}
+FWI_media_Bf <- Bejaia_fire%>% 
+  summarize(máximo = max(FWI),
+            mínimo = min(FWI),
+            media = mean(FWI),
+            mediana = median(FWI),
+            DM_me= mean(abs(FWI - mediana)),
+            var = mean((FWI - media)^2),
+            sd = sqrt(var),
+            CV = sd/media,
+            DV = mean(abs(FWI-mediana))
+            );FWI_media_Bf
+FWI_media_Bnf <- Bejaia_not_fire%>% 
+  summarize(máximo = max(FWI),
+            mínimo = min(FWI),
+            media = mean(FWI),
+            mediana = median(FWI),
+            DM_me= mean(abs(FWI - mediana)),
+            var = mean((FWI - media)^2),
+            sd = sqrt(var),
+            CV = sd/media,
+            DV = mean(abs(FWI-mediana))
+            );FWI_media_Bnf
+
+```
 
 
 
@@ -124,3 +178,30 @@ Vemos además en que la media de lluvia de los días con fuego es de casi 0 (0.0
 
 
 Por lo que respecta a los condiciones que afectan a los incendios en Sidi son:
+
+Por un lado tenemos la temperatura:
+Vamos a analizar los incendios en Sidi enfocándonos en esta.
+```{r}
+temperatura_media_Sf <- Sidi_fire %>% 
+  summarize(máximo = max(Temperature),
+            mínimo = min(Temperature),
+            media = mean(Temperature),
+            var = mean((Temperature - media)^2),
+            sd = sqrt(var)
+            );temperatura_media_Sf
+temperatura_media_Snf <- Sidi_not_fire%>% 
+  summarize(máximo = max(Temperature),
+            mínimo = min(Temperature),
+            media = mean(Temperature),
+            mediana = median(Temperature),
+            DM_me= mean(abs(Temperature - mediana)),
+            var = mean((Temperature - media)^2),
+            sd = sqrt(var),
+            CV = sd/media,
+            DV = mean(abs(Temperature-mediana))
+            );temperatura_media_Snf
+ggplot(Sidi, aes(x=Temperature, y=0, color=Classes))+
+  geom_point()
+
+```
+Tas el analisis de los incendios con respecto a la temperatura en Sidi-Bel_Abbes podemos observar claras diferencias con Bejaia, en primer lugar las temperaturas en esta zona son mucho mas elevadas (tanto cuando ha habido incendios como no), además que al contrario que en Bejaia aquí las altas temperaturas por lo general si suelen conllevar siempre a la aparicion de incendios y las bajas temperaturas a la ausencia de estos tal como se observa en el gráfico.
