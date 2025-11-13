@@ -482,3 +482,157 @@ ggplot(tabla, aes(x = Region, y = DC, fill = Classes)) +
        y = "DC") +
   theme_minimal()
 ```
+
+###ÓSCAR
+
+
+
+La siguiente variable que vamos a analizar es la acumulación de combustible (BUI) en ambas zonas, con tal de ver si esto afecta directamente a la aparición de incendios.
+
+
+```{r}
+Bui_media_bf <- Bejaia_fire %>% 
+  summarise(maximo= max(BUI),
+            minimo= min(BUI),
+            media= mean(BUI),
+            mediana= median(BUI),
+            Dm_me = mean(abs(BUI-  mediana)),
+            var= mean((BUI- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(BUI- mediana)),
+            );Bui_media_bf
+
+Bui_media_bnf <- Bejaia_not_fire %>% 
+  summarise(maximo= max(BUI),
+            minimo= min(BUI),
+            media= mean(BUI),
+            mediana= median(BUI),
+            Dm_me = mean(abs(BUI-  mediana)),
+            var= mean((BUI- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(BUI- mediana)),
+            );Bui_media_bnf
+
+ggplot(tabla, aes(x= Region, y= BUI, color= Classes))+
+  geom_boxplot()+
+  labs(title= "%BUI")
+
+ggplot(tabla, aes(x=Region, y= BUI, color=Classes))+
+  geom_point(alpha=0.5)+
+  labs(title = "%BUI")
+
+```
+
+
+Como podemos ver en ambos gráficos, observamos que entre un (0-10)% de BUI no suele haber incendios, esto tiene sentido ya que a menor cantidad de material inflamable menor es la posibilidad de generar un incendio.
+Además, En ambas regiones, la media de BUI es bastante superior a los dias sin fuego por lo que evidentemente el riesgo de incendio aumenta a mayor acumuulación de combustible.  Por ejemplo, la media de Bejaia en dias de fuego es de 24,5 y los dias sin incendios 6.8.
+
+Por otra parte la varianza alta en los dias de fuego (+200) indica que el BUI suele variar y no hay un valor que se repita constantemente, pero siendo habitual que supere el 15%. En cambio, los dias sin incendios hay una varianza mas baja(40), lo que nos dice que el BUI se mantiene bajo (entre el 0-10%).
+
+
+
+
+Ahora vamos a añadir las variables ISI(índice de propagación inicial) y Ws(velocidad del viento) para comparar las dos al mismo tiempo en un gráfico.
+
+
+Primero vamos con ISI, con los datos de Sidi-Bel_Abbes:
+
+```{r}
+Isi_media_sf <- Sidi_fire %>% 
+  summarise(maximo= max(ISI),
+            minimo= min(ISI),
+            media= mean(ISI),
+            mediana= median(ISI),
+            Dm_me = mean(abs(ISI-  mediana)),
+            var= mean((ISI- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(ISI- mediana)),
+            );Isi_media_sf
+
+Isi_media_snf <- Sidi_not_fire %>% 
+  summarise(maximo= max(ISI),
+            minimo= min(ISI),
+            media= mean(ISI),
+            mediana= median(ISI),
+            Dm_me = mean(abs(ISI-  mediana)),
+            var= mean((ISI- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(ISI- mediana)),
+            );Isi_media_snf
+```
+
+
+
+
+Ahora hacemos lo mismo pero para la velocidad del viento:
+
+```{r}
+Ws_media_sf <- Sidi_fire %>% 
+  summarise(maximo= max(Ws),
+            minimo= min(Ws),
+            media= mean(Ws),
+            mediana= median(Ws),
+            Dm_me = mean(abs(Ws-  mediana)),
+            var= mean((Ws- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(Ws- mediana)),
+            );Ws_media_sf
+
+Ws_media_snf <- Sidi_not_fire %>% 
+  summarise(maximo= max(Ws),
+            minimo= min(Ws),
+            media= mean(Ws),
+            mediana= median(Ws),
+            Dm_me = mean(abs(Ws-  mediana)),
+            var= mean((Ws- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(Ws- mediana)),
+            );Ws_media_snf
+```
+
+
+
+
+Una vez tenemos los datos de ambas variables, las comparamos en un mismo gráfico para ver si tienen alguna correlación directa:
+
+
+
+```{r}
+ggplot(tabla, aes(x= id))+
+  geom_line(aes(y= ISI), color= "red")+
+  geom_line(aes(y= Ws), color= "blue")+
+  labs(title= "ISI(rojo) y Ws(Azul) en ambas zonas")+
+  theme_minimal()
+cor(Sidi$ISI, Sidi$Ws)
+cor(Bejaia$ISI, Bejaia$Ws)
+```
+
+Tras analziar el gr´wfico y tener un valor cor(correlación) muy bajo (0.12) en Sidi-Bel_Abbes y -0.03 en Bejaia, podemos concluir que aunque el viento pueda incrementar ligeramente el valor de ISI, no es un factor determinante para decir que a mayor velocidad de viento, mayor índice de propagación, Aunque pueda parecer lógico la relación no se da porque seguramente cuando en estas Regiones haya viento es cuando más humedad haya y por tanto no se produzcan indencios, igualmente esto son solo suposiciones que más adelante comprobamos si son ciertas.
+
+Además,esto indica que probablemente otras variables como la humedad de la región o la acumulación de combustible sean más determinantes. Para ello vamos a comparar el viento con el BUI.
+
+
+
+
+
+```{r}
+ggplot(tabla, aes(x= id))+
+  geom_line(aes(y= ISI), color= "red")+
+  geom_line(aes(y= BUI), color= "green")+
+  labs(title= "ISI(rojo) y BUI(Verde) en ambas zonas")+
+  theme_minimal()
+cor(Sidi$ISI, Sidi$BUI)
+cor(Bejaia$ISI, Bejaia$BUI)
+```
+
+Aquí si podemos ver que hay una correlación muy alta en Sidi(>0.6) e incluso aún más en Bejaia(>0.7), lo que significa que cuando hay una mayor cantidad de combustible, el fuego se propaga más rápidamente y nos indica que la cantidad de BUI es un factor determinante para  la propagación del fuego.
+
+
+
+
