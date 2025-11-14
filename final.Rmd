@@ -224,7 +224,7 @@ Podemos concluir entonces que el FWI esta directamente relacionado con los incen
 
 #6 Vamos a continuar analizando los incendios pero ahora centrados en el FFMC y el CD
 
-#VARIABLE 1: FFMC (Fine Fuel Moisture Code)
+#VARIABLE 1: FFMC
 
 # Gráfico 1: Boxplot FFMC vs Incendios
 ```{r}
@@ -239,10 +239,10 @@ ggplot(tabla, aes(x = Region, y = FFMC, fill = Classes)) +
 ```
 Tras ver el gráfico, podemos determinar que en ambas regiones, a partir del valor 80 de FFMC, se producen incendios, y por debajo no hay incendios.
 
- El boxplot muestra la distribución de FFMC en cada categoría
- La caja representa el 50% central de los datos, las líneas los extremos
+El boxplot muestra la distribución de FFMC en cada categoría.
+La caja representa el 50% central de los datos, las líneas los extremos.
 
-# Estadísticas por tipo de incendio
+#Estadísticas por tipo de incendio:
 ```{r}
 ffmc_stats <- tabla %>%
   group_by(Classes) %>%
@@ -257,10 +257,8 @@ ffmc_stats
 ```
 
 Los resultados muestran una clara diferencia en los valores de FFMC entre días con y sin incendios.
- Los días con incendios ("fire") presentan valores  más altos de FFMC (media de 84.2 y 65.1), lo que confirma que la baja humedad en combustibles finos es un factor determinante para la ocurrencia de incendios forestales.
-La mediana de 87.2 en días con incendios indica que más del 50% de estos eventos
- ocurren cuando el FFMC supera este valor, mientras que en días sin incendios
- la mediana es de apenas 66.5.
+Los días con incendios presentan valores altos de FFMC (media de 84.2 y 65.1), lo que confirma que la baja humedad en combustibles finos es un factor determinante para  que los incendios forestales ocurran.
+La mediana es 87.2 en días con incendios, lo que indica que más del 50% de estos eventos ocurren cuando el FFMC supera este valor, mientras que en días sin incendios la mediana es de apenas 66.5.
 
 
 # Gráfico 2: Densidad de FFMC
@@ -305,8 +303,8 @@ ggplot(tabla, aes(x = Region, y = DC, fill = Classes)) +
   theme_minimal()
 ```
 Los puntos negros representan valores atípicos (outliers) - datos que se encuentran por fuera del rango normal de distribución.
- En días SIN incendios ("not fire"): varios puntos arriba indican días con DC
- En días CON incendios ("fire"): puntos abajo muestran incendios que ocurrieron
+ En días SIN incendios ("not fire"): varios puntos arriba indican días con DC.
+ En días CON incendios ("fire"): puntos abajo muestran incendios que ocurrieron.
 
 
 # Gráfico 4: Densidad de DC
@@ -337,9 +335,9 @@ dc_stats <- datos %>%
   )
 dc_stats
 ```
- como podemos ver :
- -CON incendios: DC promedio = 94.3 (sequía severa)
- -SIN incendios: DC promedio = 28.9 (sequía moderada)
+ Como podemos ver :
+ -Con incendios: DC promedio = 94.3 (sequía severa)
+ -Sin incendios: DC promedio = 28.9 (sequía moderada)
  Umbral claro: DC >50 indica alto riesgo de incendio
 
 # DC por región
@@ -351,9 +349,9 @@ dc_region <- tabla %>%
 print(dc_region)
 
 ```
-podemos decir que Ambas regiones siguen el mismo patrón: DC >90 con incendios y <30 sin incendios de modo que :
-Sidi-Bel_Abbes: 98.3 con incendios (más severo) vs 29.3 sin incendios
- Bejaia: 90.8 con incendios y 28.6 sin incendios
+Podemos decir que ambas regiones siguen el mismo patrón: DC >90 con incendios y <30 sin incendios de modo que :
+Sidi-Bel_Abbes: 98.3 con incendios (más severo) vs 29.3 sin incendios.
+Bejaia: 90.8 con incendios y 28.6 sin incendios.
 entonces DC >50 = alto riesgo en ambas zonas.
 
 
@@ -369,7 +367,7 @@ cat("Correlación entre FFMC y DC:", round(correlacion, 3), "\n")
 ```
 
 Valor = 0.507 → Correlación positiva  Esto significa que cuando FFMC aumenta, DC también tiende a aumentar,
-entonces no es correlación perfecta (1.0), otros factores también influyen.
+por lo que no es correlación perfecta (1.0), otros factores también influyen.
 
 
 (para los miembros del grupo: La función cat() sirve para imprimir texto y resultados en la consola de R.
@@ -465,9 +463,9 @@ ggplot(tabla, aes(x=Region, y= BUI, color=Classes))+
 
 
 Como podemos ver en ambos gráficos, observamos que entre un (0-10)% de BUI no suele haber incendios, esto tiene sentido ya que a menor cantidad de material inflamable menor es la posibilidad de generar un incendio.
-Además, En ambas regiones, la media de BUI es bastante superior a los dias sin fuego por lo que evidentemente el riesgo de incendio aumenta a mayor acumuulación de combustible.  Por ejemplo, la media de Bejaia en dias de fuego es de 24,5 y los dias sin incendios 6.8.
+Además, En ambas regiones, la media de BUI es bastante superior a los días sin fuego por lo que evidentemente el riesgo de incendio aumenta a mayor acumulación de combustible.  Por ejemplo, la media de Bejaia en días de fuego es de 24,5 y los días sin incendios 6.8.
 
-Por otra parte la varianza alta en los dias de fuego (+200) indica que el BUI suele variar y no hay un valor que se repita constantemente, pero siendo habitual que supere el 15%. En cambio, los dias sin incendios hay una varianza mas baja(40), lo que nos dice que el BUI se mantiene bajo (entre el 0-10%).
+Por otra parte la varianza alta en los días de fuego (+200) indica que el BUI suele variar y no hay un valor que se repita constantemente, pero siendo habitual que supere el 15%. En cambio, los días sin incendios hay una varianza más baja(40), lo que nos dice que el BUI se mantiene bajo (entre el 0-10%).
 
 
 
@@ -569,8 +567,4 @@ cor(Sidi$ISI, Sidi$BUI)
 cor(Bejaia$ISI, Bejaia$BUI)
 ```
 
-Aquí si podemos ver que hay una correlación muy alta en Sidi(>0.6) e incluso aún más en Bejaia(>0.7), lo que significa que cuando hay una mayor cantidad de combustible, el fuego se propaga más rápidamente y nos indica que la cantidad de BUI es un factor determinante para  la propagación del fuego.
-
-
-
-
+Aquí sí podemos ver que hay una correlación muy alta en Sidi(>0.6) e incluso aún más en Bejaia(>0.7), lo que significa que cuando hay una mayor cantidad de combustible, el fuego se propaga más rápidamente y nos indica que la cantidad de BUI es un factor determinante para  la propagación del fuego.
