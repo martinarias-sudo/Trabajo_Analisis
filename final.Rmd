@@ -382,7 +382,30 @@ Tras el analisis de las temperaturas en Bejaia cuando han habido incendios y no,
 
 Sin embargo también podemos notar que cuanto mas bajas son las temperaturas menos incendios hay, aunque esto no implica que no hayan habido incendios cuando hay bajas temperaturas.
 
-Tas el analisis de los incendios con respecto a la temperatura en Sidi-Bel_Abbes podemos observar claras diferencias con Bejaia, en primer lugar las temperaturas en esta zona son mucho mas elevadas (tanto cuando ha habido incendios como no), además que al contrario que en Bejaia aquí las altas temperaturas por lo general si suelen conllevar siempre a la aparicion de incendios y las bajas temperaturas a la ausencia de estos tal como se observa en el gráfico.
+En cuanto a Sidi podemos observar claras diferencias con Bejaia, en primer lugar las temperaturas en esta zona son mucho mas elevadas (tanto cuando ha habido incendios como no), además que al contrario que en Bejaia aquí las altas temperaturas por lo general si suelen conllevar siempre a la aparicion de incendios y las bajas temperaturas a la ausencia de estos tal como se observa en el gráfico.
+
+
+
+Calculamos la asimetria y la curtosis de la temperatura en Bejaia:
+```{r}
+ggplot(Bejaia, aes(x= Temperature)) +
+  geom_bar(fill = "steelblue", color = "black")
+
+Asimetria <- skew(Bejaia$Temperature); Asimetria
+
+Curtosis <- kurtosi((Bejaia$Temperature)); Curtosis
+```
+Debido a una asimetria negativa tenemos que los datos de la temperatura en Bejaia son asimetricos a la izquierda como se puede observar en la gráfica ademas de que la curtosis es nogativa y por tanto la forma de los datos es algo platicurtica 
+
+Ahora hacemos lo mismo pero en Sidi :
+```{r}
+ggplot(Sidi, aes(x= Temperature)) +
+  geom_bar(fill = "steelblue", color = "black")
+
+Asimetria <- skew(Sidi$Temperature); Asimetria
+Curtosis <- kurtosi((Sidi$Temperature)); Curtosis
+```
+En el caso de Sidi debido a el resultado de la asimetria sabemos que los datos son algo asimetricos a la izquierda aunque tambien algo simetricos (como se observa en el grafico) y en este caso los datos son mas platicurticos que en Bejaia 
 
 #5 Ahora por lo que respecta al índice meteorológico de incendios FWI tenemos:
 ```{r}
