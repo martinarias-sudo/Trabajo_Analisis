@@ -10,7 +10,6 @@ library(dplyr)
 library(ggplot2)
 library(modeest)
 library(stringr)
-
 tabla <- read.csv("bd1_8.csv", sep=";", header= TRUE)
 head(tabla)
 
@@ -224,7 +223,7 @@ Podemos concluir entonces que el FWI esta directamente relacionado con los incen
 
 #6 Vamos a continuar analizando los incendios pero ahora centrados en el FFMC y el CD
 
-#VARIABLE 1: FFMC
+#VARIABLE 1: FFMC (Fine Fuel Moisture Code)
 
 # Gráfico 1: Boxplot FFMC vs Incendios
 ```{r}
@@ -239,10 +238,10 @@ ggplot(tabla, aes(x = Region, y = FFMC, fill = Classes)) +
 ```
 Tras ver el gráfico, podemos determinar que en ambas regiones, a partir del valor 80 de FFMC, se producen incendios, y por debajo no hay incendios.
 
-El boxplot muestra la distribución de FFMC en cada categoría.
-La caja representa el 50% central de los datos, las líneas los extremos.
+ El boxplot muestra la distribución de FFMC en cada categoría
+ La caja representa el 50% central de los datos, las líneas los extremos
 
-#Estadísticas por tipo de incendio:
+# Estadísticas por tipo de incendio
 ```{r}
 ffmc_stats <- tabla %>%
   group_by(Classes) %>%
@@ -257,25 +256,12 @@ ffmc_stats
 ```
 
 Los resultados muestran una clara diferencia en los valores de FFMC entre días con y sin incendios.
-Los días con incendios presentan valores altos de FFMC (media de 84.2 y 65.1), lo que confirma que la baja humedad en combustibles finos es un factor determinante para  que los incendios forestales ocurran.
-La mediana es 87.2 en días con incendios, lo que indica que más del 50% de estos eventos ocurren cuando el FFMC supera este valor, mientras que en días sin incendios la mediana es de apenas 66.5.
+ Los días con incendios ("fire") presentan valores  más altos de FFMC (media de 87.253 y 65.3), lo que confirma que la baja humedad en combustibles finos es un factor determinante para la ocurrencia de incendios forestales.
+La mediana de 87.8 en días con incendios indica que más del 50% de estos eventos
+ ocurren cuando el FFMC supera este valor, mientras que en días sin incendios
+ la mediana es de apenas 68.25.
 
 
-# Gráfico 2: Densidad de FFMC
-```{r}
-ggplot(tabla, aes(x = Region, y = FFMC, fill = region)) +
-  geom_boxplot(alpha = 0.7) +
-  labs(title = "FFMC por Región y Tipo de Incendio",
-       x = "Región", 
-       y = "FFMC") +
-  theme_minimal()
-```
-
-
-En ambas regiones, los incendios ocurren con FFMC >80, mientras que sin incendios FFMC <70.
-Sidi-Bel_Abbes muestra valores más altos (FFMC ~85-90 con incendios) vs Bejaia (FFMC ~80-85).
-El umbral de riesgo se mantiene consistente: FFMC ≥80 indica alto riesgo de incendio.
-FFMC por región
 ```{r}
 ffmc_region <- tabla %>%
   filter(complete.cases(FFMC, Region, Classes)) %>%
@@ -285,14 +271,14 @@ cat("FFMC promedio por región y tipo de incendio:\n")
 print(ffmc_region)
 
 ```
-Confirmado: en ambas regiones, FFMC >80 con incendios y <70 sin incendios.
- Sidi-Bel_Abbes: 86.3 con incendios vs 66.1 sin incendios 
- Bejaia: 82.4 con incendios vs 64.2 sin incendios 
+queda confirmado que en ambas regiones, FFMC >80 implica que haya incendios y <70 que no los haya.
+ Sidi-Bel_Abbes: 88.3 con incendios y 67.9 sin incendios 
+ Bejaia: 86.6 con incendios vs 63.5 sin incendios 
  Sidi-Bel_Abbes muestra mayor riesgo potencial con valores más altos.
 
 # VARIABLE 2: DC (Drought Code)  
 
-# Gráfico 3: Boxplot DC vs Incendios
+# Gráfico 2: Boxplot DC vs Incendios
 ```{r}
 ggplot(tabla, aes(x = Region, y = DC, fill = Classes)) +
   geom_boxplot(alpha = 0.7) +
@@ -302,29 +288,20 @@ ggplot(tabla, aes(x = Region, y = DC, fill = Classes)) +
        y = "DC") +
   theme_minimal()
 ```
-Los puntos negros representan valores atípicos (outliers) - datos que se encuentran por fuera del rango normal de distribución.
- En días SIN incendios ("not fire"): varios puntos arriba indican días con DC.
- En días CON incendios ("fire"): puntos abajo muestran incendios que ocurrieron.
-
-
-# Gráfico 4: Densidad de DC
-```{r}
-ggplot(tabla, aes(x = Region, y = DC, fill = Classes)) +
-  geom_boxplot(alpha = 0.7) +
-  labs(title = "DC por Región y Tipo de Incendio",
-       x = "Región", 
-       y = "DC (Severidad de sequía)") +
-  theme_minimal()
-
-```
- En ambas regiones, los incendios ocurren con DC más alto: ~80-150 y ~10-80 sin incendios.
+En AMBAS regiones, los días con incendios tienen
+valores de DC mucho más altos que los dias sin  incendios
+En ambas regiones, los incendios ocurren con DC más alto: ~80-150 y ~10-80 sin incendios.
 Sidi-Bel_Abbes muestra valores más extremos (DC hasta 200 con incendios) vs Bejaia (máx ~180).
 
 
 
+Los puntos negros representan valores atípicos (outliers) - datos que se encuentran por fuera del rango normal de distribución.
+ En días SIN incendios ("not fire"): varios puntos arriba indican días con DC
+ En días CON incendios ("fire"): puntos abajo muestran incendios que ocurrieron
+
 # Estadísticas por tipo de incendio
 ```{r}
-dc_stats <- datos %>%
+dc_stats <- tabla %>%
   group_by(Classes) %>%
   summarise(
     Media = (mean(DC)),
@@ -335,11 +312,10 @@ dc_stats <- datos %>%
   )
 dc_stats
 ```
- Como podemos ver :
- -Con incendios: DC promedio = 94.3 (sequía severa)
- -Sin incendios: DC promedio = 28.9 (sequía moderada)
- Umbral claro: DC >50 indica alto riesgo de incendio
-
+ como podemos ver :
+ cuando hay inciendios el DC mas alto seria 70.81 que es mas alto cuando no hay incendios
+ 
+ 
 # DC por región
 ```{r}
 dc_region <- tabla %>%
@@ -349,9 +325,9 @@ dc_region <- tabla %>%
 print(dc_region)
 
 ```
-Podemos decir que ambas regiones siguen el mismo patrón: DC >90 con incendios y <30 sin incendios de modo que :
-Sidi-Bel_Abbes: 98.3 con incendios (más severo) vs 29.3 sin incendios.
-Bejaia: 90.8 con incendios y 28.6 sin incendios.
+podemos decir que Ambas regiones siguen el mismo patrón: DC >90 con incendios y <30 sin incendios de modo que :
+Sidi-Bel_Abbes: 98.3 con incendios (más severo) vs 29.3 sin incendios
+ Bejaia: 90.8 con incendios y 28.6 sin incendios
 entonces DC >50 = alto riesgo en ambas zonas.
 
 
@@ -360,63 +336,14 @@ entonces DC >50 = alto riesgo en ambas zonas.
 
 
 ```{r}
-cat("\n=== RELACIÓN ENTRE FFMC Y DC ===\n")
-correlacion <- cor(tabla$FFMC, datos$DC, use = "complete.obs")
-cat("Correlación entre FFMC y DC:", round(correlacion, 3), "\n")
+
+correlacion <- cor(tabla$FFMC, tabla$DC, use = "complete.obs")
+print(round(correlacion, 3))
 
 ```
 
 Valor = 0.507 → Correlación positiva  Esto significa que cuando FFMC aumenta, DC también tiende a aumentar,
-por lo que no es correlación perfecta (1.0), otros factores también influyen.
-
-
-(para los miembros del grupo: La función cat() sirve para imprimir texto y resultados en la consola de R.
- Es como un "print" pero más flexible para combinar texto y variables.
-
-
-# Gráfico 5: Scatter plot FFMC vs DC
-```{r}
-ggplot(tabla, aes(x = FFMC, y = DC, color = Classes)) + 
-  geom_boxplot() +
-  labs(title = "Relación entre FFMC y DC",
-       subtitle = paste("Correlación =", round(correlacion, 3)),
-       x = "FFMC (Humedad combustibles)", 
-       y = "DC (Severidad sequía)") +
-  theme_minimal() 
-```
-Se ve claramente la correlación positiva (0.631): cuando FFMC aumenta, DC también.
- Los puntos naranjas (incendios) se concentran en la esquina superior derecha:
-FFMC >80 y DC >50 = zona de alto riesgo.
-Los puntos azules (sin incendios) están en la zona inferior izquierda.
-
-# UMBRALES CRÍTICOS
-
-
-```{r}
-cat("\n=== UMBRALES CRÍTICOS SUGERIDOS ===\n")
-
-dias_incendios <- tabla %>% filter(Classes == "fire")
-
-umbral_ffmc <- quantile(dias_incendios$FFMC, 0.25)
-umbral_dc <- quantile(dias_incendios$DC, 0.25)
-
-cat("Umbral FFMC para riesgo de incendio:", round(umbral_ffmc, 1), "\n")
-cat("Umbral DC para riesgo de incendio:", round(umbral_dc, 1), "\n")
-
-```
-
-- FFMC: 75% de los incendios ocurrieron con valores SUPERIORES a 80.5
-- DC: 75% de los incendios ocurrieron con valores SUPERIORES a 43.6
-hemos utilizado el percentile 25 porque :
- Es un criterio PREVENTIVO: si FFMC > 80.5 o DC > 43.6, hay ALTO RIESGO
- porque el 75% de incendios históricos ocurrieron en estas condiciones.
-
-
-
-
-
-(para los miembros del grupo:Este código calcula umbrales de riesgo CONSERVADORES usando el percentil 25)
-
+entonces no es correlación perfecta (1.0), otros factores también influyen.
 
 
 ###ÓSCAR
@@ -463,9 +390,9 @@ ggplot(tabla, aes(x=Region, y= BUI, color=Classes))+
 
 
 Como podemos ver en ambos gráficos, observamos que entre un (0-10)% de BUI no suele haber incendios, esto tiene sentido ya que a menor cantidad de material inflamable menor es la posibilidad de generar un incendio.
-Además, En ambas regiones, la media de BUI es bastante superior a los días sin fuego por lo que evidentemente el riesgo de incendio aumenta a mayor acumulación de combustible.  Por ejemplo, la media de Bejaia en días de fuego es de 24,5 y los días sin incendios 6.8.
+Además, En ambas regiones, la media de BUI es bastante superior a los dias sin fuego por lo que evidentemente el riesgo de incendio aumenta a mayor acumuulación de combustible.  Por ejemplo, la media de Bejaia en dias de fuego es de 24,5 y los dias sin incendios 6.8.
 
-Por otra parte la varianza alta en los días de fuego (+200) indica que el BUI suele variar y no hay un valor que se repita constantemente, pero siendo habitual que supere el 15%. En cambio, los días sin incendios hay una varianza más baja(40), lo que nos dice que el BUI se mantiene bajo (entre el 0-10%).
+Por otra parte la varianza alta en los dias de fuego (+200) indica que el BUI suele variar y no hay un valor que se repita constantemente, pero siendo habitual que supere el 15%. En cambio, los dias sin incendios hay una varianza mas baja(40), lo que nos dice que el BUI se mantiene bajo (entre el 0-10%).
 
 
 
@@ -549,7 +476,7 @@ cor(Sidi$ISI, Sidi$Ws)
 cor(Bejaia$ISI, Bejaia$Ws)
 ```
 
-Tras analziar el gráfico y tener un valor cor(correlación) muy bajo (0.12) en Sidi-Bel_Abbes y -0.03 en Bejaia, podemos concluir que aunque el viento pueda incrementar ligeramente el valor de ISI, no es un factor determinante para decir que a mayor velocidad de viento, mayor índice de propagación, Aunque pueda parecer lógico la relación no se da porque seguramente cuando en estas Regiones haya viento es cuando más humedad haya y por tanto no se produzcan indencios, igualmente esto son solo suposiciones que más adelante comprobamos si son ciertas.
+Tras analizar el gráfico y tener un valor cor(correlación) muy bajo (0.12) en Sidi-Bel_Abbes y -0.03 en Bejaia, podemos concluir que aunque el viento pueda incrementar ligeramente el valor de ISI, no es un factor determinante para decir que a mayor velocidad de viento, mayor índice de propagación, Aunque pueda parecer lógico la relación no se da porque seguramente cuando en estas regiones hay viento es cuando más humedad haya y por tanto no se produzcan indencios, igualmente esto son solo suposiciones que más adelante comprobamos si son ciertas.
 
 Además,esto indica que probablemente otras variables como la humedad de la región o la acumulación de combustible sean más determinantes. Para ello vamos a comparar el viento con el BUI.
 
@@ -567,4 +494,4 @@ cor(Sidi$ISI, Sidi$BUI)
 cor(Bejaia$ISI, Bejaia$BUI)
 ```
 
-Aquí sí podemos ver que hay una correlación muy alta en Sidi(>0.6) e incluso aún más en Bejaia(>0.7), lo que significa que cuando hay una mayor cantidad de combustible, el fuego se propaga más rápidamente y nos indica que la cantidad de BUI es un factor determinante para  la propagación del fuego.
+Aquí si podemos ver que hay una correlación muy alta en Sidi(>0.6) e incluso aún más en Bejaia(>0.7), lo que significa que cuando hay una mayor cantidad de combustible, el fuego se propaga más rápidamente y nos indica que la cantidad de BUI es un factor determinante para  la propagación del fuego.
