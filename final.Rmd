@@ -374,7 +374,7 @@ temperatura_media_Snf <- Sidi_not_fire%>%
             DV = mean(abs(Temperature-mediana))
             );temperatura_media_Snf
 
-ggplot(tabla, aes(x=Region, y=Temperature, color=Classes))+
+ggplot(tabla, aes(x=Region, y=Temperature, fill=Classes))+
   geom_boxplot()
 ```
 
@@ -408,7 +408,7 @@ FWI_media_Bnf <- Bejaia_not_fire%>%
             CV = sd/media,
             DV = mean(abs(FWI-mediana))
             );FWI_media_Bnf
-ggplot(tabla, aes(Region, FWI, color= Classes))+
+ggplot(tabla, aes(Region, FWI, fill= Classes))+
   geom_boxplot()
 ```
 Observando los resultados de los analisis de Bejaia y Sidi-Bel_Abbes podemos decir:
@@ -576,11 +576,11 @@ Bui_media_bnf <- Bejaia_not_fire %>%
             DV= mean(abs(BUI- mediana)),
             );Bui_media_bnf
 
-ggplot(tabla, aes(x= Region, y= BUI, color= Classes))+
+ggplot(tabla, aes(x= Region, y= BUI, fill= Classes))+
   geom_boxplot()+
   labs(title= "%BUI")
 
-ggplot(tabla, aes(x=Region, y= BUI, color=Classes))+
+ggplot(tabla, aes(x=Region, y= BUI, fill=Classes))+
   geom_point(alpha=0.5)+
   labs(title = "%BUI")
 
