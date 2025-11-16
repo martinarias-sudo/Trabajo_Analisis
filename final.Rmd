@@ -649,6 +649,10 @@ respectivamente) y en Sidi (11.45 y 0.7 respectivamente), que en Sidi el
 FWI medio es mayor lo que prueba que en Sidi hayan mas incendios que en
 Bejaia.
 
+#### 5.3 CONCLUSIONES
+El indice meteorologico de incendios nos indica qué tan favorables son las condiciones del tiempo para que se inicie, se propague y sea difícil de controlar un incendio forestal y esta estrechamente relacionado con la temperatura, velocidad del viento humedad relativa y precipitaciones.
+Por  tanto es uno de las mejores variables para determinar si puede haber un incendio asi como la gravedad de este.
+
 Vamos a calcular ahora la asimetria y el apuntamiento con respeco a el
 FWI en Bejaia
 
