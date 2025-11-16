@@ -383,7 +383,7 @@ Tras el analisis de las temperaturas en Bejaia cuando han habido incendios y no,
 Sin embargo también podemos notar que cuanto mas bajas son las temperaturas menos incendios hay, aunque esto no implica que no hayan habido incendios cuando hay bajas temperaturas.
 
 En cuanto a Sidi podemos observar claras diferencias con Bejaia, en primer lugar las temperaturas en esta zona son mucho mas elevadas (tanto cuando ha habido incendios como no), además que al contrario que en Bejaia aquí las altas temperaturas por lo general si suelen conllevar siempre a la aparicion de incendios y las bajas temperaturas a la ausencia de estos tal como se observa en el gráfico.
-
+La media de temperatura en Sidi cuando ha habido incendios es 34.49 ºC bastante superior que en Bejaia 32.88 ºC
 
 
 Calculamos la asimetria y la curtosis de la temperatura en Bejaia:
@@ -431,6 +431,28 @@ FWI_media_Bnf <- Bejaia_not_fire%>%
             CV = sd/media,
             DV = mean(abs(FWI-mediana))
             );FWI_media_Bnf
+FWI_media_Sf <- Sidi_fire%>% 
+  summarize(máximo = max(FWI),
+            mínimo = min(FWI),
+            media = mean(FWI),
+            mediana = median(FWI),
+            DM_me= mean(abs(FWI - mediana)),
+            var = mean((FWI - media)^2),
+            sd = sqrt(var),
+            CV = sd/media,
+            DV = mean(abs(FWI-mediana))
+            );FWI_media_Sf
+FWI_media_Snf <- Sidi_not_fire%>% 
+  summarize(máximo = max(FWI),
+            mínimo = min(FWI),
+            media = mean(FWI),
+            mediana = median(FWI),
+            DM_me= mean(abs(FWI - mediana)),
+            var = mean((FWI - media)^2),
+            sd = sqrt(var),
+            CV = sd/media,
+            DV = mean(abs(FWI-mediana))
+            );FWI_media_Snf
 ggplot(tabla, aes(Region, FWI, fill= Classes))+
   labs(title = "FWI por Región e incendio")+
   geom_boxplot()
@@ -438,6 +460,8 @@ ggplot(tabla, aes(Region, FWI, fill= Classes))+
 Observando los resultados de los analisis de Bejaia y Sidi-Bel_Abbes podemos decir:
 Por un lado, tanto en Bejaia como en Sidi se puede observar una gran disparidad en los datos de cuando hubo incendios y no con respecto a el FWI, lo cual significa que a menor indice meteorológico de incendios menos incendios hay y viceversa.
 Podemos concluir entonces que el FWI esta directamente relacionado con los incendios ya que con la ausencia de este los incendios son inexistentes.
+
+Tambien se observa tanto en los graficos como en los resultados de la mediana 0.5 en Bejaia y 0.7 en Sidi que en Sidi el FWI medio es mayor lo que prueba que en Sidi hayan mas incendios que en Bejaia.
 
 Vamos a calcular ahora la asimetria y el apuntamiento con respeco a el FWI en Bejaia
 ```{r}
