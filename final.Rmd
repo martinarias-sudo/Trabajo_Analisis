@@ -320,11 +320,26 @@ RH_Snf <- Sidi_not_fire%>%
 ```
 
 Podemos concluir que la mediana es un mejor representante de los datos
-puesto que aunque a veces sea por poco, la DM_med \< DM.
+puesto que aunque a veces sea por poco, la DM_med \< DM. También vemos
+que la curtosis siempre es negativa por lo que los datos son asimétricos
+a la izquierda.
 
-También podemos comparar los quantiles. En este caso, el Q1 en los días
-sin incendio están muy poco por debajo del Q3 de los días en los que
-hubieron incendios.
+#### 2.3 CONCLUSIONES
+
+La humedad relativa influye en los incendios ya que los valores cuando
+hay incendios son menores que cuando no los hay si comparamos el 50% de
+los datos centrales así como la mediana.
+
+Vemos también que el resto de los datos (las lineas finas negras de las
+cajas, o "las colas") no dejan muy claro valores en los que solo haya
+incendio o no. Es decir, los valores de RH qye toma fuego también los
+toma no fuego, no es como la lluvia que están más separados los valores.
+
+Lo más relevante que podemos decir es que en Sidi, por debajo de un 40%
+de humedad relativa es muy probable que haya fuego.
+
+En definitiva, la humedad relativa influye en los incendios, pero no es
+un factor que deje claro si hay o no incendios
 
 ## 3. DMC (humedad en la capa del mantillo)
 
@@ -341,9 +356,12 @@ ggplot(tabla, aes(x=Region, y=DMC, fill=Classes))+
 ```
 
 En el gráfico vemos que cuando no hay incendios, los valores de DMC son
-más bajos que cuando hay incendios. En este caso, sonmuy parecidas las
-gráficas de ambas regiones. Vemos que el 50% de los datos centrales de
-fuego siempre están por encima del 50% central de cuando no hay fuego
+claramente más bajos que cuando hay incendios. En este caso, las
+gráficas de ambas regiones son muy parecidas . Vemos que el 50% de los
+datos centrales de fuego siempre están por encima del 50% central de
+cuando no hay fuego
+
+#### 3.2 ESTADÍSTICA DE LOS DATOS
 
 ```{r}
 DMC_Bf <- Bejaia_fire%>% 
@@ -356,7 +374,8 @@ DMC_Bf <- Bejaia_fire%>%
           CV = sd/media,
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
-          Q3 = quantile(DMC, prob=0.75)
+          Q3 = quantile(DMC, prob=0.75),
+          Curtosis = kurtosi(DMC)
           );DMC_Bf
 
 DMC_Bnf <- Bejaia_not_fire%>% 
@@ -369,7 +388,8 @@ DMC_Bnf <- Bejaia_not_fire%>%
           CV = sd/media,
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
-          Q3 = quantile(DMC, prob=0.75)
+          Q3 = quantile(DMC, prob=0.75),
+          Curtosis = kurtosi(DMC)
           );DMC_Bnf
 
 DMC_Sf <- Sidi_fire%>% 
@@ -382,7 +402,8 @@ DMC_Sf <- Sidi_fire%>%
           CV = sd/media,
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
-          Q3 = quantile(DMC, prob=0.75)
+          Q3 = quantile(DMC, prob=0.75),
+          Curtosis = kurtosi(DMC)
           );DMC_Sf
 
 DMC_Snf <- Sidi_not_fire%>% 
@@ -395,13 +416,27 @@ DMC_Snf <- Sidi_not_fire%>%
           CV = sd/media,
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
-          Q3 = quantile(DMC, prob=0.75)
+          Q3 = quantile(DMC, prob=0.75),
+          Curtosis = kurtosi(DMC)
           );DMC_Snf
 ```
 
-Con los datos, podemos afirmar que en Bejaia, cuando hay incendios Q1
-(11.85) \> Q3 (7.85), no incendio. En Sidi ocurre lo mismo cuando hay
-incendio Q1 (12.85) Q3 (9.65), no incendio.
+Con los datos, podemos afirmar que hay asimetría a la derecha por ser la
+curtosis en todos los casos positiva, por lo que el mejor representante
+de los datos es la mediana.
+
+**BEJAIA:** Q1 (11.85) incendios \> Q3 (7.85) no incendio.
+
+**SIDI:** Q1 (12.85) incendio \> Q3 (9.65) no incendio.
+
+Vemos también que la mediana de fuego suele ser mayor si no igual que el
+límite superior de cuando no hay fuego (el final de la línea de cuando
+no hay fuego)
+
+Otra característica importante de DMC es que presenta muchos outliers, y
+vemos que suelen haber más cuando hay incendios.
+
+#### 3.3 RELACIÓN CON LA LLUVIA
 
 Puesto que DMC mide la humedad, vamos a ver como se relaciona con la
 lluvia
@@ -436,7 +471,20 @@ húmedo. A menor valor de DMC, mayor será la humedad. En el gráfico de
 puntos vemos que esto es correcto, a mayor lluvia menor humedad en el
 mantillo y viceversa.
 
-4.  Temperature (temperatura)
+Tabién se puede comprobar con el gráfico de lineas donde vemos que
+cuando llueve, DMC suele bajar
+
+#### 3.4 CONCLUSIONES
+
+Tras haber analizado los datos de DMC, podemos concluir que DMC
+contribuye a que hayan incendios, a mayor DMC, más probabilidad de
+incendio. Además, viendo la gráfica, los valores que tma DMC cuando hay
+o no incendios tienen ciertas diferencias, por lo que nos puede ayudar
+para determinar si hay fuego o no.
+
+## 4. Temperature (temperatura)
+
+#### 4.1 Gráfico y datos
 
 ```{r}
 temperatura_media_Bf <- Bejaia_fire %>% 
@@ -480,6 +528,8 @@ ggplot(tabla, aes(x=Region, y=Temperature, fill=Classes))+
   labs(title = "Temperatura por Región e incendio")+
   geom_boxplot()
 ```
+
+#### 4.2 CONCLUSIONES
 
 Tras el analisis de las temperaturas en Bejaia cuando han habido
 incendios y no, podemos concluir, que las altas temperaturas contibuyen
@@ -529,7 +579,9 @@ datos son algo asimetricos a la izquierda aunque tambien algo simetricos
 (como se observa en el grafico) y en este caso los datos son mas
 platicurticos que en Bejaia
 
-5.  FWI (índice meteorológico de incendios)
+## 5. FWI (índice meteorológico de incendios)
+
+#### 5.1 Gráfico y datos
 
 ```{r}
 FWI_media_Bf <- Bejaia_fire%>% 
@@ -581,6 +633,8 @@ ggplot(tabla, aes(Region, FWI, fill= Classes))+
   geom_boxplot()
 ```
 
+#### 5.2 CONCLUSIONES
+
 Observando los resultados de los analisis de Bejaia y Sidi-Bel_Abbes
 podemos decir: Por un lado, tanto en Bejaia como en Sidi se puede
 observar una gran disparidad en los datos de cuando hubo incendios y no
@@ -626,9 +680,9 @@ En el caso de Sidi aunque la asimetria es igual que en Bejaia
 diferencia de la forma de los datos ya que en este caso son
 platicurticos debido al resultado negativo en la curtosis
 
-6.  FFMC (Fine Fuel Moisture Code)
+## 6. FFMC (Fine Fuel Moisture Code)
 
-6.1 Gráfico
+#### 6.1 Gráfico
 
 ```{r}
 ggplot(tabla, aes(x = Region, y = FFMC, fill = Classes)) +
@@ -647,7 +701,7 @@ incendios.
 El boxplot muestra la distribución de FFMC en cada categoría La caja
 representa el 50% central de los datos, las líneas los extremos
 
-6.2 Estadísticas por tipo de incendios
+#### 6.2 Estadísticas por tipo de incendios
 
 ```{r}
 ffmc_stats <- tabla %>%
@@ -680,14 +734,16 @@ cat("FFMC promedio por región y tipo de incendio:\n")
 print(ffmc_region)
 ```
 
+#### 6.3 CONCLUSIONES
+
 Queda confirmado que en ambas regiones, FFMC \>80 implica que haya
 incendios y \<70 que no los haya. -Sidi-Bel_Abbes: 88.3 con incendios y
 67.9 sin incendios -Bejaia: 86.6 con incendios vs 63.5 sin incendios
 -Sidi-Bel_Abbes muestra mayor riesgo potencial con valores más altos.
 
-7.  DC (Drought Code)
+## 7. DC (Drought Code)
 
-7.1 Gráfico
+#### 7.1 Gráfico
 
 ```{r}
 ggplot(tabla, aes(x = Region, y = DC, fill = Classes)) +
@@ -705,13 +761,17 @@ ocurren con DC más alto: \~80-150 y \~10-80 sin incendios.
 Sidi-Bel_Abbes muestra valores más extremos (DC hasta 200 con incendios)
 vs Bejaia (máx \~180).
 
-Los puntos negros representan valores atípicos (outliers) - datos que se
-encuentran por fuera del rango normal de distribución. -En días SIN
-incendios ("not fire"): varios puntos arriba indican días con DC -En
-días CON incendios ("fire"): puntos abajo muestran incendios que
+Los puntos negros representan valores atípicos (outliers)
+
+\- datos que se encuentran por fuera del rango normal de distribución.
+
+-En días SIN incendios ("not fire"): varios puntos arriba indican días
+con DC
+
+-En días CON incendios ("fire"): puntos abajo muestran incendios que
 ocurrieron
 
-7.2 Estadísticas por tipo de incendio
+#### 7.2 Estadísticas por tipo de incendio
 
 ```{r}
 dc_stats <- tabla %>%
@@ -739,14 +799,14 @@ dc_region <- tabla %>%
 print(dc_region)
 ```
 
-7.3 CONCLUSIONES
+#### 7.3 CONCLUSIONES
 
 podemos decir que Ambas regiones siguen el mismo patrón: DC \>90 con
 incendios y \<30 sin incendios de modo que : Sidi-Bel_Abbes: 98.3 con
 incendios (más severo) vs 29.3 sin incendios Bejaia: 90.8 con incendios
 y 28.6 sin incendios entonces DC \>50 = alto riesgo en ambas zonas.
 
-7.4 RELCIÓN ENTRE FFMC Y DC
+#### 7.4 RELCIÓN ENTRE FFMC Y DC
 
 ```{r}
 
@@ -758,11 +818,13 @@ Valor = 0.507 → Correlación positiva Esto significa que cuando FFMC
 aumenta, DC también tiende a aumentar, entonces no es una correlación
 perfecta (1.0), otros factores también influyen.
 
-8.  BUI
+## 8. BUI
 
 La siguiente variable que vamos a analizar es la acumulación de
 combustible (BUI) en ambas zonas, con tal de ver si esto afecta
 directamente a la aparición de incendios.
+
+#### 8.1 Datos y gráfico
 
 ```{r}
 Bui_media_bf <- Bejaia_fire %>% 
@@ -794,6 +856,8 @@ ggplot(tabla, aes(x= Region, y= BUI, fill= Classes))+
   labs(title= "BUI por Región e incendio")
 ```
 
+#### 8.2 CONCLUSIONES
+
 Como podemos ver en ambos gráficos, observamos que entre un (0-10)% de
 BUI no suele haber incendios, esto tiene sentido ya que a menor cantidad
 de material inflamable menor es la posibilidad de generar un incendio.
@@ -812,6 +876,8 @@ una varianza mas baja(40), lo que nos dice que el BUI se mantiene bajo
 Ahora vamos a añadir las variables ISI(índice de propagación inicial) y
 Ws(velocidad del viento) para comparar las dos al mismo tiempo en un
 gráfico.
+
+#### 8.3 COMPARACIÓN CON ISI Y Ws
 
 Primero vamos con ISI, con los datos de Sidi-Bel_Abbes:
 
@@ -910,4 +976,3 @@ incluso aún más en Bejaia(\>0.7), lo que significa que cuando hay una
 mayor cantidad de combustible, el fuego se propaga más rápidamente y nos
 indica que la cantidad de BUI es un factor determinante para la
 propagación del fuego.
-
