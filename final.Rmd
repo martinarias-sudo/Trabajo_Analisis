@@ -633,6 +633,8 @@ ggplot(tabla, aes(Region, FWI, fill= Classes))+
   geom_boxplot()
 ```
 
+#### 5.2 CONCLUSIONES
+
 Observando los resultados de los analisis de Bejaia y Sidi-Bel_Abbes
 podemos decir: Por un lado, tanto en Bejaia como en Sidi se puede
 observar una gran disparidad en los datos de cuando hubo incendios y no
@@ -646,10 +648,6 @@ mediana cuando han habido y no incendios en Bejaia (9.7 y 0.5
 respectivamente) y en Sidi (11.45 y 0.7 respectivamente), que en Sidi el
 FWI medio es mayor lo que prueba que en Sidi hayan mas incendios que en
 Bejaia.
-
-#### 5.2 CONCLUSIONES
-El indice meteorologico de incendios nos indica qué tan favorables son las condiciones del tiempo para que se inicie, se propague y sea difícil de controlar un incendio forestal y esta estrechamente relacionado con la temperatura, velocidad del viento humedad relativa y precipitaciones.
-Por  tanto es uno de las mejores variables para determinar si puede haber un incendio asi como la gravedad de este.
 
 Vamos a calcular ahora la asimetria y el apuntamiento con respeco a el
 FWI en Bejaia
@@ -839,6 +837,9 @@ Bui_media_bf <- Bejaia_fire %>%
             sd= sqrt(var),
             CV= sd/media,
             DV= mean(abs(BUI- mediana)),
+            Q1 = quantile(BUI, prob=0.25),
+            Q3 = quantile(BUI, prob=0.75),
+            Curtosis = kurtosi(BUI)
             );Bui_media_bf
 
 Bui_media_bnf <- Bejaia_not_fire %>% 
@@ -851,7 +852,47 @@ Bui_media_bnf <- Bejaia_not_fire %>%
             sd= sqrt(var),
             CV= sd/media,
             DV= mean(abs(BUI- mediana)),
+            Q1 = quantile(BUI, prob=0.25),
+            Q3 = quantile(BUI, prob=0.75),
+            Curtosis = kurtosi(BUI)
             );Bui_media_bnf
+
+
+Bui_media_sf <- Sidi_fire %>% 
+  summarise(maximo= max(BUI),
+            minimo= min(BUI),
+            media= mean(BUI),
+            mediana= median(BUI),
+            Dm_me = mean(abs(BUI-  mediana)),
+            var= mean((BUI- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(BUI- mediana)),
+            Q1 = quantile(BUI, prob=0.25),
+            Q3 = quantile(BUI, prob=0.75),
+            Curtosis = kurtosi(BUI)
+            );Bui_media_sf
+
+Bui_media_snf <- Sidi_not_fire %>% 
+  summarise(maximo= max(BUI),
+            minimo= min(BUI),
+            media= mean(BUI),
+            mediana= median(BUI),
+            Dm_me = mean(abs(BUI-  mediana)),
+            var= mean((BUI- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(BUI- mediana)),
+            Q1 = quantile(BUI, prob=0.25),
+            Q3 = quantile(BUI, prob=0.75),
+            Curtosis = kurtosi(BUI)
+            );Bui_media_snf
+
+
+
+
+
+
 
 ggplot(tabla, aes(x= Region, y= BUI, fill= Classes))+
   geom_boxplot()+
@@ -894,6 +935,9 @@ Isi_media_sf <- Sidi_fire %>%
             sd= sqrt(var),
             CV= sd/media,
             DV= mean(abs(ISI- mediana)),
+            Q1 = quantile(ISI, prob=0.25),
+            Q3 = quantile(ISI, prob=0.75),
+            Curtosis = kurtosi(ISI)
             );Isi_media_sf
 
 Isi_media_snf <- Sidi_not_fire %>% 
@@ -906,7 +950,46 @@ Isi_media_snf <- Sidi_not_fire %>%
             sd= sqrt(var),
             CV= sd/media,
             DV= mean(abs(ISI- mediana)),
+            Q1 = quantile(ISI, prob=0.25),
+            Q3 = quantile(ISI, prob=0.75),
+            Curtosis = kurtosi(ISI)
             );Isi_media_snf
+
+
+Isi_media_bf <- Bejaia_fire %>% 
+  summarise(maximo= max(ISI),
+            minimo= min(ISI),
+            media= mean(ISI),
+            mediana= median(ISI),
+            Dm_me = mean(abs(ISI-  mediana)),
+            var= mean((ISI- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(ISI- mediana)),
+            Q1 = quantile(ISI, prob=0.25),
+            Q3 = quantile(ISI, prob=0.75),
+            Curtosis = kurtosi(ISI)
+            );Isi_media_bf
+
+Isi_media_bnf <- Bejaia_not_fire %>% 
+  summarise(maximo= max(ISI),
+            minimo= min(ISI),
+            media= mean(ISI),
+            mediana= median(ISI),
+            Dm_me = mean(abs(ISI-  mediana)),
+            var= mean((ISI- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(ISI- mediana)),
+            Q1 = quantile(ISI, prob=0.25),
+            Q3 = quantile(ISI, prob=0.75),
+            Curtosis = kurtosi(ISI)
+            );Isi_media_bnf
+
+
+
+
+
 ```
 
 Ahora hacemos lo mismo pero para la velocidad del viento:
@@ -922,6 +1005,9 @@ Ws_media_sf <- Sidi_fire %>%
             sd= sqrt(var),
             CV= sd/media,
             DV= mean(abs(Ws- mediana)),
+            Q1 = quantile(Ws, prob=0.25),
+            Q3 = quantile(Ws, prob=0.75),
+            Curtosis = kurtosi(Ws)
             );Ws_media_sf
 
 Ws_media_snf <- Sidi_not_fire %>% 
@@ -934,7 +1020,44 @@ Ws_media_snf <- Sidi_not_fire %>%
             sd= sqrt(var),
             CV= sd/media,
             DV= mean(abs(Ws- mediana)),
+            Q1 = quantile(Ws, prob=0.25),
+            Q3 = quantile(Ws, prob=0.75),
+            Curtosis = kurtosi(Ws)
             );Ws_media_snf
+
+
+Ws_media_bf <- Bejaia_fire %>% 
+  summarise(maximo= max(Ws),
+            minimo= min(Ws),
+            media= mean(Ws),
+            mediana= median(Ws),
+            Dm_me = mean(abs(Ws-  mediana)),
+            var= mean((Ws- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(Ws- mediana)),
+            Q1 = quantile(Ws, prob=0.25),
+            Q3 = quantile(Ws, prob=0.75),
+            Curtosis = kurtosi(Ws)
+            );Ws_media_bf
+
+Ws_media_bnf <- Bejaia_not_fire %>% 
+  summarise(maximo= max(Ws),
+            minimo= min(Ws),
+            media= mean(Ws),
+            mediana= median(Ws),
+            Dm_me = mean(abs(Ws-  mediana)),
+            var= mean((Ws- media)^2),
+            sd= sqrt(var),
+            CV= sd/media,
+            DV= mean(abs(Ws- mediana)),
+            Q1 = quantile(Ws, prob=0.25),
+            Q3 = quantile(Ws, prob=0.75),
+            Curtosis = kurtosi(Ws)
+            );Ws_media_bnf
+
+
+
 ```
 
 Una vez tenemos los datos de ambas variables, las comparamos en un mismo
