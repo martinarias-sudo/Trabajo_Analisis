@@ -164,6 +164,7 @@ lluvia_Bf <- Bejaia_fire %>%
           DV = mean(abs(Rain-mediana)),
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
+          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Bf
 
@@ -179,6 +180,7 @@ lluvia_Bnf <- Bejaia_not_fire%>%
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
           máximo = max(Rain),
+          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Bnf
 
@@ -193,6 +195,7 @@ lluvia_Sf <- Sidi_fire%>%
           DV = mean(abs(Rain-mediana)),
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
+          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Sf
 
@@ -207,6 +210,7 @@ lluvia_Snf <- Sidi_not_fire%>%
           DV = mean(abs(Rain-mediana)),
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
+          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Snf
 ```
@@ -273,6 +277,7 @@ RH_Bf <- Bejaia_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
+          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Bf
 
@@ -287,6 +292,7 @@ RH_Bnf <- Bejaia_not_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
+          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Bnf
 
@@ -301,6 +307,7 @@ RH_Sf <- Sidi_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
+          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Sf
 
@@ -315,14 +322,13 @@ RH_Snf <- Sidi_not_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
+          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Snf
 ```
 
 Podemos concluir que la mediana es un mejor representante de los datos
-puesto que aunque a veces sea por poco, la DM_med \< DM. También vemos
-que la curtosis siempre es negativa por lo que los datos son asimétricos
-a la izquierda.
+puesto que aunque a veces sea por poco, la DM_med \< DM. Vemos también que la asimetría es positiva excepto para Bejaia cuando no hay fuego. Los valores cercanos a 0, por lo que son ligeramente asimétricos. Esto explica que la diferencia entre la DM y la DM_med sea mínima.
 
 #### 2.3 CONCLUSIONES
 
@@ -375,6 +381,7 @@ DMC_Bf <- Bejaia_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
+          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Bf
 
@@ -389,6 +396,7 @@ DMC_Bnf <- Bejaia_not_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
+          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Bnf
 
@@ -403,6 +411,7 @@ DMC_Sf <- Sidi_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
+          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Sf
 
@@ -417,12 +426,13 @@ DMC_Snf <- Sidi_not_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
+          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Snf
 ```
 
 Con los datos, podemos afirmar que hay asimetría a la derecha por ser la
-curtosis en todos los casos positiva, por lo que el mejor representante
+asimetría en todos los casos positiva, por lo que el mejor representante
 de los datos es la mediana.
 
 **BEJAIA:** Q1 (11.85) incendios \> Q3 (7.85) no incendio.
