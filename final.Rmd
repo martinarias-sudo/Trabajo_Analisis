@@ -1,5 +1,6 @@
 ---
 title: "Análisis de incendios en Bejaia y Sidi"
+subtitle: "Integrantes: Ali, Efrén, Martín y Óscar"
 output:
   html_document: default
   word_document: default
@@ -10,8 +11,17 @@ editor_options:
     wrap: 72
 ---
 
-1.  Cargamos las librerías necesarias y la base de datos. También
-    limpiaremos la base de datos por si hay espacios en blanco.
+## 0. INTRODUCCIÓN
+
+Este proyecto consiste en analizar los diversos factores que
+contribuyeron a los incenidios en Bejaia y Sidi. La base de datos
+llamada tabla recoge los datos que influyeron en los incendios
+producidos en ambas regiones
+
+#### 0.1 Librerías
+
+Cargamos las librerías necesarias y la base de datos. También
+limpiaremos la base de datos por si hay espacios en blanco.
 
 ```{r}
 library(dplyr)
@@ -124,6 +134,22 @@ ggplot(tabla, aes(x=Region, y=Rain, color=Classes))+
   labs(title = "Lluvia por Región y Tipo de Incendio")+
   geom_boxplot()+
   theme_minimal()
+
+ggplot(Bejaia, aes(x= Rain)) +
+  geom_bar(fill = "steelblue", color = "black")+
+  labs(title = "Lluvia en Bejaia")
+
+cat("Asimetría y curtosis de lluvia en Bejaia")
+Asimetria_rb <- skew(Bejaia$Rain); Asimetria_rb
+Curtosis_rhb <- kurtosi((Bejaia$Rain)); Curtosis_rhb
+
+ggplot(Sidi, aes(x= Rain)) +
+  geom_bar(fill = "steelblue", color = "black")+
+  labs(title = "lluvia en Sidi")
+
+cat("Asimetría y curtosis de lluvia en Sidi")
+Asimetria_rs <- skew(Sidi$Rain); Asimetria_rs
+Curtosis_rs <- kurtosi((Sidi$Rain)); Curtosis_rs
 ```
 
 <br>En el gráfico observamos que los días que hubieron incendios, no ha
@@ -131,6 +157,10 @@ habido casi lluvia. En cambio, los días en los que no han habido
 incendios, sí ha llovido algo o mucho. En ambas regiones, vemos que los
 datos son asimétricos a la derecha por lo que la mediana sería un mejor
 representante de los datos que la mediana.
+
+En cuanto a la lluvia en Bejaia, es asimétrica a la derecha y es
+leptocúrtica. Lo mismo ocurre para la lluvia en Sidi, lo que pasa que es
+menos asimétrica y menos leptocúrtica.
 
 #### Bejaia
 
@@ -164,7 +194,6 @@ lluvia_Bf <- Bejaia_fire %>%
           DV = mean(abs(Rain-mediana)),
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
-          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Bf
 
@@ -180,7 +209,6 @@ lluvia_Bnf <- Bejaia_not_fire%>%
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
           máximo = max(Rain),
-          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Bnf
 
@@ -195,7 +223,6 @@ lluvia_Sf <- Sidi_fire%>%
           DV = mean(abs(Rain-mediana)),
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
-          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Sf
 
@@ -210,14 +237,13 @@ lluvia_Snf <- Sidi_not_fire%>%
           DV = mean(abs(Rain-mediana)),
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
-          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Snf
 ```
 
 Como en todos los casos la asimetría (curtosis) \> 0, la mediana es un
-mejor representante., de hecho se puede comprobar viendo que la DM_med
-\< DM
+mejor representante, de hecho se puede comprobar viendo que la DM_med \<
+DM
 
 Tras ver el gráfico y los datos, vamos a analizar un poco más en
 profundidad los resultados obtenidos. Para ambas regiones se cumple que:
@@ -232,9 +258,8 @@ profundidad los resultados obtenidos. Para ambas regiones se cumple que:
 
 Tras analizar la lluvia podemos concluir que
 
--   la lluvia es más predecible en Bejaia respecto a Sidi: debido a que
-    la cantidad de lluvia en los días que hay incendios no se entrelaza
-    mucho con la cantidad de lluvia cuando no hay incendios.
+-   La lluvia es más predecible en Bejaia respecto a Sidi: debido a que
+    hay menos outliers en Bejaia que en Sidi cuando hay incendios.
 
 -   Sidi no depende tanto de la lluvia comparado con Bejaia: esto se
     debe a que en Sidi vemos que valores atípicos siguen indicando fuego
@@ -243,7 +268,8 @@ Tras analizar la lluvia podemos concluir que
 
 -   La lluvia es un factor relevante para los incendios: Como ya se ha
     analizado, Q3 (fuego) \< Q1 (no fuego) lo que hace que estén
-    bastante diferenciado los datos.
+    bastante diferenciados los datos. Además, se ve claramente que a
+    mayor precipitación menores casos de lluvia.
 
 ## 2. RH, la humedad relativa
 
@@ -254,6 +280,8 @@ ggplot(tabla, aes(x=Region, y=RH, fill=Classes))+
   labs(title = "Humedad Relativa por Región y Tipo de Incendio")+
   geom_boxplot()+
   theme_classic()
+
+
 ```
 
 Podemos obsevar que en los días que hay fuego, la humedad relativa es
@@ -277,7 +305,6 @@ RH_Bf <- Bejaia_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
-          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Bf
 
@@ -292,7 +319,6 @@ RH_Bnf <- Bejaia_not_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
-          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Bnf
 
@@ -307,7 +333,6 @@ RH_Sf <- Sidi_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
-          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Sf
 
@@ -322,27 +347,24 @@ RH_Snf <- Sidi_not_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
-          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Snf
 ```
 
 Podemos concluir que la mediana es un mejor representante de los datos
-puesto que aunque a veces sea por poco, la DM_med \< DM. Vemos también que la asimetría es positiva excepto para Bejaia cuando no hay fuego. Los valores cercanos a 0, por lo que son ligeramente asimétricos. Esto explica que la diferencia entre la DM y la DM_med sea mínima.
+puesto que aunque a veces sea por poco, la DM_med \< DM. También vemos
+que la curtosis siempre es negativa por lo que los datos son asimétricos
+a la izquierda.
 
 #### 2.3 CONCLUSIONES
 
-La humedad relativa influye en los incendios ya que los valores cuando
-hay incendios son menores que cuando no los hay si comparamos el 50% de
-los datos centrales así como la mediana.
+La humedad relativa influye en los incendios, vemos que a mayor valor de
+RH, menos probabilidad de incendio
 
-Vemos también que el resto de los datos (las lineas finas negras de las
-cajas, o "las colas") no dejan muy claro valores en los que solo haya
-incendio o no. Es decir, los valores de RH qye toma fuego también los
-toma no fuego, no es como la lluvia que están más separados los valores.
-
-Lo más relevante que podemos decir es que en Sidi, por debajo de un 40%
-de humedad relativa es muy probable que haya fuego.
+Cuando hay incendios la humedad suele ser más baja, pero hay muchos días
+con humedad similar tanto con incendios como sin ellos. Lo más útil es
+que por debajo del 40% de humedad en Sidi, hay una alta probabilidad de
+incendio
 
 En definitiva, la humedad relativa influye en los incendios, pero no es
 un factor que deje claro si hay o no incendios
@@ -359,6 +381,7 @@ ggplot(tabla, aes(x=Region, y=DMC, fill=Classes))+
   labs(title = "DMC por Región y Tipo de Incendio")+
   geom_boxplot()+
   theme_classic()
+
 ```
 
 En el gráfico vemos que cuando no hay incendios, los valores de DMC son
@@ -381,7 +404,6 @@ DMC_Bf <- Bejaia_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
-          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Bf
 
@@ -396,7 +418,6 @@ DMC_Bnf <- Bejaia_not_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
-          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Bnf
 
@@ -411,7 +432,6 @@ DMC_Sf <- Sidi_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
-          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Sf
 
@@ -426,13 +446,12 @@ DMC_Snf <- Sidi_not_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
-          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Snf
 ```
 
 Con los datos, podemos afirmar que hay asimetría a la derecha por ser la
-asimetría en todos los casos positiva, por lo que el mejor representante
+curtosis en todos los casos positiva, por lo que el mejor representante
 de los datos es la mediana.
 
 **BEJAIA:** Q1 (11.85) incendios \> Q3 (7.85) no incendio.
@@ -486,11 +505,12 @@ cuando llueve, DMC suele bajar
 
 #### 3.4 CONCLUSIONES
 
-Tras haber analizado los datos de DMC, podemos concluir que DMC
-contribuye a que hayan incendios, a mayor DMC, más probabilidad de
-incendio. Además, viendo la gráfica, los valores que tma DMC cuando hay
-o no incendios tienen ciertas diferencias, por lo que nos puede ayudar
-para determinar si hay fuego o no.
+Tras haber analizado los datos de DMC, a mayor valor, más probabilidad
+de incendio. Lo más relevante es que los valores de DMC cuando hay
+incendios suelen ser siempre más altos que cuando no los hay, hasta el
+punto de que el 25% de los días con menor DMC durante incendios supera
+el 75% de los días sin incendios y los valores de DMC son parecidos para
+ambas regiones .
 
 ## 4. Temperature (temperatura)
 
@@ -1111,3 +1131,23 @@ incluso aún más en Bejaia(\>0.7), lo que significa que cuando hay una
 mayor cantidad de combustible, el fuego se propaga más rápidamente y nos
 indica que la cantidad de BUI es un factor determinante para la
 propagación del fuego.
+
+## 9. CONLUSIÓN FINAL
+
+Tras haber analizado con profundidad todas las variables de la base de
+datos, podemos concluir que los datos que más información nos dan sobre
+los incendios son la lluvia y FFMC. Esto se debe a que los valores
+correspondientes a incendios no están presentes en los valores cuando no
+hay incendios. Esto nos permite saber con mayor seguridad si va ha haber
+incendios o no.
+
+FWI también es una variable que nos aporta mucha información si no se
+tienen en cuenta los outliers y lo mismo ocurre para DC.
+
+A lo largo del análisis, hemos podido comprobar que la gran mayoría de
+los datos han sido asimétricos por lo que la mediana suele ser el dato
+que mejor representa a los datos.
+
+Puesto que los datos suelen estar muy dispersos a lo largo del análisis
+se ha recurrido al boxplot para representar los datos y deja de form más
+clara como son los datos.
