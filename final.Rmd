@@ -136,7 +136,7 @@ ggplot(tabla, aes(x=Region, y=Rain, color=Classes))+
   theme_minimal()
 
 ggplot(Bejaia, aes(x= Rain)) +
-  geom_bar(fill = "steelblue", color = "black")+
+  geom_histogram(fill = "steelblue", color = "black")+
   labs(title = "Lluvia en Bejaia")
 
 cat("Asimetría y curtosis de lluvia en Bejaia")
@@ -144,7 +144,7 @@ Asimetria_rb <- skew(Bejaia$Rain); Asimetria_rb
 Curtosis_rhb <- kurtosi((Bejaia$Rain)); Curtosis_rhb
 
 ggplot(Sidi, aes(x= Rain)) +
-  geom_bar(fill = "steelblue", color = "black")+
+  geom_histogram(fill = "steelblue", color = "black")+
   labs(title = "lluvia en Sidi")
 
 cat("Asimetría y curtosis de lluvia en Sidi")
@@ -194,6 +194,7 @@ lluvia_Bf <- Bejaia_fire %>%
           DV = mean(abs(Rain-mediana)),
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
+          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Bf
 
@@ -209,6 +210,7 @@ lluvia_Bnf <- Bejaia_not_fire%>%
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
           máximo = max(Rain),
+          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Bnf
 
@@ -223,6 +225,7 @@ lluvia_Sf <- Sidi_fire%>%
           DV = mean(abs(Rain-mediana)),
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
+          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Sf
 
@@ -237,11 +240,12 @@ lluvia_Snf <- Sidi_not_fire%>%
           DV = mean(abs(Rain-mediana)),
           Q1 = quantile(Rain, prob=0.25),
           Q3 = quantile(Rain, prob=0.75),
+          Asim = skew(Rain),
           Curtosis = kurtosi(Rain)
           );lluvia_Snf
 ```
 
-Como en todos los casos la asimetría (curtosis) \> 0, la mediana es un
+Como en todos los casos la asimetría \> 0, la mediana es un
 mejor representante, de hecho se puede comprobar viendo que la DM_med \<
 DM
 
@@ -281,6 +285,10 @@ ggplot(tabla, aes(x=Region, y=RH, fill=Classes))+
   geom_boxplot()+
   theme_classic()
 
+ggplot(tabla, aes(x=Region, y=RH, color =Classes, alpha = 0.2))+
+  labs(title = "Humedad Relativa por Región y Tipo de Incendio")+
+  geom_point()+
+  theme_classic()
 
 ```
 
@@ -305,6 +313,7 @@ RH_Bf <- Bejaia_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
+          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Bf
 
@@ -319,6 +328,7 @@ RH_Bnf <- Bejaia_not_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
+          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Bnf
 
@@ -333,6 +343,7 @@ RH_Sf <- Sidi_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
+          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Sf
 
@@ -347,14 +358,14 @@ RH_Snf <- Sidi_not_fire%>%
           DV = mean(abs(RH-mediana)),
           Q1 = quantile(RH, prob=0.25),
           Q3 = quantile(RH, prob=0.75),
+          Asim = skew(RH),
           Curtosis = kurtosi(RH)
           );RH_Snf
 ```
 
 Podemos concluir que la mediana es un mejor representante de los datos
 puesto que aunque a veces sea por poco, la DM_med \< DM. También vemos
-que la curtosis siempre es negativa por lo que los datos son asimétricos
-a la izquierda.
+que la curtosis siempre es negativa por lo que los datos son platicúrticos.
 
 #### 2.3 CONCLUSIONES
 
@@ -404,6 +415,7 @@ DMC_Bf <- Bejaia_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
+          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Bf
 
@@ -418,6 +430,7 @@ DMC_Bnf <- Bejaia_not_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
+          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Bnf
 
@@ -432,6 +445,7 @@ DMC_Sf <- Sidi_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
+          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Sf
 
@@ -446,13 +460,12 @@ DMC_Snf <- Sidi_not_fire%>%
           DV = mean(abs(DMC-mediana)),
           Q1 = quantile(DMC, prob=0.25),
           Q3 = quantile(DMC, prob=0.75),
+          Asim = skew(DMC),
           Curtosis = kurtosi(DMC)
           );DMC_Snf
 ```
 
-Con los datos, podemos afirmar que hay asimetría a la derecha por ser la
-curtosis en todos los casos positiva, por lo que el mejor representante
-de los datos es la mediana.
+Con los datos, podemos afirmar que los datos son asimétricos a la derecha por ser la asimetría positiva, por lo que el mejor representante de los datos es la mediana.
 
 **BEJAIA:** Q1 (11.85) incendios \> Q3 (7.85) no incendio.
 
