@@ -1919,16 +1919,6 @@ Aquí si apreciamos una mejor relación entre FWI y BUI en este ajuste.
 
 Vamos a ver los valore predichos de la variable respuesta( en este caso FWI) y sus errores aleatorios para posteriormente hacer un grafico en el que podamos ver sus residuos.
 
-```{r}
-fit <- lm(FWI ~ BUI, data= tabla); fit
-
-fit$fitted.values
-predict(fit)
-
-residuos <- tabla$FWI - fit$fitted.values ; residuos
-```
-
-
 Hacemos el gráfico incluyeno los residuos que han quedado:
 
 
