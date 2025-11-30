@@ -506,7 +506,7 @@ tabla_conts <- table(Sidi$Classes, Sidi$categoria_RH)
 
 #incluimos las marginales
 
-tabla_con_marginales <- addmargins(tabla_cont)
+tabla_con_marginales <- addmargins(tabla_conts)
 tabla_con_marginales
 ```
 
