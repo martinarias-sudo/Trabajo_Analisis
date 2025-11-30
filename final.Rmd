@@ -1061,7 +1061,7 @@ ggplot(tabla_absoluta_graf_S, aes(x = Var1, y = Freq, fill = Var2))+
   ylab("Porcentajes")+
   labs(fill = "intervalos de temperatura")+
   theme_minimal()
- ``` 
+``` 
 
 
 En el grafico se observa como muy pocos dias con temperaturas extremas no han tenido incendios y como solo unos pocos con temperaturas altas los han tenido
