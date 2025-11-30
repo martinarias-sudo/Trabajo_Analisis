@@ -883,6 +883,207 @@ datos son algo asimetricos a la izquierda aunque tambien algo simetricos
 (como se observa en el grafico) y en este caso los datos son mas
 platicurticos que en Bejaia
 
+### 4.3 Tabla de contingencia Bejaia
+
+Primero haremos las tablas para Bejaia
+
+Transformamos la variable temperatura en una variable categorica ordinal:
+Nombrando como temperatura media al intervalo [22-27],
+temperatura alta al intervalo (27-33]
+temperatura extrema al intervalo (33-37]
+{r}
+Bejaia$categoria_temp_Bejaia <- cut(
+  Bejaia$Temperature,
+  breaks = c(22, 27, 33, 37),   # límites de los intervalos
+  labels = c("Media", "Alta", "Extrema"),
+  include.lowest = TRUE,
+  right = TRUE
+)
+print(Bejaia)
+
+
+creamos las tablas 
+
+{r}
+tabla_absoluta_B <- table(Bejaia$Classes, Bejaia$categoria_temp_Bejaia)
+tabla_absoluta_B
+tabla_con_marginales_B <- addmargins(tabla_absoluta_B)
+tabla_con_marginales_B
+
+
+Realizamos la tabla de contingencia de las frecuencias relativa
+
+{r}
+tabla_relativa_B <- prop.table(tabla_absoluta_B)
+tabla_relativa_B
+tabla_relativa_marg_B <- addmargins(tabla_relativa_B)
+tabla_relativa_marg_B
+
+
+Un 60 % de los dias tienen una temperatura alta.
+
+El 20% de los dias han habido temperaturas extremas e incendios.
+El 0.8% de los dias han habido temperaturas mediias e incendios.
+
+Realizamos ahora la tabla de contingencia de la variable temperatura y Classes en Bejaia
+
+
+{r}
+tabla_condicionada_B <- prop.table(tabla_absoluta_B, margin = 1)*100
+tabla_condicionada_B
+tabla_condicionada_marg_B <- addmargins(tabla_condicionada_B, margin = 2)
+tabla_condicionada_marg_B
+
+
+El 1.69% de los dias con incendio tienen una temperatura media
+
+El 40.67% de los dias con incendios tienen temperaturas extremas
+
+Realizamos un grafico de barras apilado para mostrar los datos
+
+{r}
+tabla_absoluta_graf_B <- data.frame(tabla_absoluta_B)
+tabla_absoluta_graf_B
+ggplot(tabla_absoluta_graf_B, aes(x = Var1, y = Freq, fill = Var2))+
+  geom_bar(stat = "identity", position = "fill")+
+  scale_y_continuous(labels = scales::percent)+
+  xlab("Clases")+
+  ylab("Porcentajes")+
+  labs(fill = "intervalos de temperatura")+
+  theme_minimal()
+  
+
+
+Se observa claramente que cuando las temperaturas han sido medias practicamente no han habido incendios y que con temperaturas extremas solo un par de dias no los han habido.
+
+Calculamos el lambda de guttman
+
+{r}
+lambda_resul <- Lambda(tabla_absoluta_B, direction = "column")
+lambda_resul
+
+
+Se reduce un 0% el error en la prediccion de la moda en la variable
+
+
+Calculamos el coeficiente Vde Cramer
+
+{r}
+chi_test <- chisq.test(tabla_absoluta_B)
+chi_test
+n <- sum(tabla_absoluta_B);n
+min <- min(nrow(tabla_absoluta_B)- 1, ncol(tabla_absoluta_B)- 1);min
+v_cramer <- sqrt(chi_test$statistic / (n*min))
+v_cramer
+CramerV(tabla_absoluta_B)
+
+
+Hay una relacion moderada entre las variables
+
+
+### 4.4 Tabla de contingencia Sidi
+
+
+Primero haremos las tablas
+
+Transformamos la variable temperatura en una variable categorica ordinal:
+Nombrando como temperatura media al intervalo [24-30],
+temperatura alta al intervalo (30-36]
+temperatura extrema al intervalo (36-42]
+
+
+{r}
+Sidi$categoria_temp_Sidi <- cut(
+  Sidi$Temperature,
+  breaks = c(24,30, 36, 42),   # límites de los intervalos
+  labels = c("Media", "Alta", "Extrema"),
+  include.lowest = TRUE,
+  right = TRUE
+)
+print(Sidi)
+
+
+creamos las tablas 
+
+{r}
+tabla_absoluta_S <- table(Sidi$Classes, Sidi$categoria_temp_Sidi)
+tabla_absoluta_S
+tabla_con_marginales_S <- addmargins(tabla_absoluta_S)
+tabla_con_marginales_S
+
+
+Realizamos la tabla de contingencia de las frecuencias relativa
+
+{r}
+tabla_relativa_S <- prop.table(tabla_absoluta_S)
+tabla_relativa_S
+tabla_relativa_marg_S <- addmargins(tabla_relativa_S)
+tabla_relativa_marg_S
+
+
+el 55.37 % de los dias han tenido temperaturas altas
+
+el 8.26% de los dias han habido incendios y las temperaturas han sido medias
+
+el 1.65% de los dias no han habido incendios y las temperaturas han sido extremas
+
+
+Realizamos ahora la tabla de contingencia de la variable temperatura y Classes en Sidi
+
+
+{r}
+tabla_condicionada_S <- prop.table(tabla_absoluta_S, margin = 1)*100
+tabla_condicionada_S
+tabla_condicionada_marg_S <- addmargins(tabla_condicionada_S, margin = 2)
+tabla_condicionada_marg_S
+
+
+el 12.82% de los dias con incendios tienen una temperatura media.
+
+el 4.65% de los dias sin incendios tienen temperaturas extremas.
+
+el 64.1% de los dias con incendios tienen temperaturas altas.
+
+
+Realizamos un grafico de barras apilado para mostrar los datos
+
+{r}
+tabla_absoluta_graf_S <- data.frame(tabla_absoluta_S)
+tabla_absoluta_graf_S
+ggplot(tabla_absoluta_graf_S, aes(x = Var1, y = Freq, fill = Var2))+
+  geom_bar(stat = "identity", position = "fill")+
+  scale_y_continuous(labels = scales::percent)+
+  xlab("Clases")+
+  ylab("Porcentajes")+
+  labs(fill = "intervalos de temperatura")+
+  theme_minimal()
+  
+
+
+En el grafico se observa como muy pocos dias con temperaturas extremas no han tenido incendios y como solo unos pocos con temperaturas altas los han tenido
+
+
+Calculamos el lambda de guttman
+
+{r}
+lambda_resul <- Lambda(tabla_absoluta_S, direction = "column")
+lambda_resul
+
+Se reduce un 12.96% el error en la prediccion de la moda en la variable
+
+Calculamos la V de Cramer
+{r}
+chi_test <- chisq.test(tabla_absoluta_S)
+chi_test
+n <- sum(tabla_absoluta_S);n
+min <- min(nrow(tabla_absoluta_S)- 1, ncol(tabla_absoluta_S)- 1);min
+v_cramer <- sqrt(chi_test$statistic / (n*min))
+v_cramer
+CramerV(tabla_absoluta_S)
+
+
+Hay una relacion moderada entre las variables
+
 ## 5. FWI (índice meteorológico de incendios)
 
 #### 5.1 Gráfico y datos
@@ -983,6 +1184,37 @@ En el caso de Sidi aunque la asimetria es igual que en Bejaia
 (asimetrico a la derecha como se observa en la grafica), hay una clara
 diferencia de la forma de los datos ya que en este caso son
 platicurticos debido al resultado negativo en la curtosis
+
+### 5.3 Recta de regresion en Bejaia
+
+Hacemos el grafico de dispersion en Bejaia 
+{r}
+ggplot(Bejaia, aes ( x = id, y = FWI))+
+  geom_point( col = "blue", size = 3, alpha = 0.6)+
+  theme_light()
+
+
+Ajustamos modelo logaritmico, resistencia = a+b LN(id)
+
+{r}
+fit_LNX <-lm(FWI ~ log(id) , data = Bejaia)
+summary(fit_LNX)
+
+
+El modelo es = -0.03608 + 1.46531 * LN(id).
+R2 = 4.68% un modelo con R2 muy bajo esto significa que no es bueno
+
+Representamos el modelo
+
+{r}
+Bejaia$pred_LNX <- predict(fit_LNX)
+ggplot(Bejaia, aes( x = id, y =FWI))+
+  geom_point(color = "blue", size = 3, alpha = 0.6)+
+  geom_line(aes(y = pred_LNX), color = "red", size = 1)+
+  theme_light()
+
+
+Se observa que no representa bien los datos.
 
 ## 6. FFMC (Fine Fuel Moisture Code)
 
