@@ -903,7 +903,6 @@ Bejaia$categoria_temp_Bejaia <- cut(
   include.lowest = TRUE,
   right = TRUE
 )
-print(Bejaia)
 ```
 
 creamos las tablas 
@@ -1004,7 +1003,6 @@ Sidi$categoria_temp_Sidi <- cut(
   include.lowest = TRUE,
   right = TRUE
 )
-print(Sidi)
 ```
 
 creamos las tablas 
