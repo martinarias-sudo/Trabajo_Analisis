@@ -870,6 +870,7 @@ directamente a la aparición de incendios.
 #### 8.1 Datos y gráfico
 
 ```{r}
+
 Bui_media_bf <- Bejaia_fire %>% 
   summarise(maximo= max(BUI),
             minimo= min(BUI),
@@ -899,6 +900,8 @@ Bui_media_bnf <- Bejaia_not_fire %>%
             Q3 = quantile(BUI, prob=0.75),
             Curtosis = kurtosi(BUI)
             );Bui_media_bnf
+
+
 
 
 Bui_media_sf <- Sidi_fire %>% 
@@ -937,10 +940,39 @@ Bui_media_snf <- Sidi_not_fire %>%
 
 
 
+
+```
+
+```{r}
 ggplot(tabla, aes(x= Region, y= BUI, fill= Classes))+
   geom_boxplot()+
   labs(title= "BUI por Región e incendio")
 ```
+
+```{r}
+
+ggplot(Bejaia, aes(x= BUI)) +
+  geom_histogram(fill = "steelblue", color = "black")
+
+Asimetria <- skew(Bejaia$FWI); Asimetria
+Curtosis <- kurtosi((Bejaia$FWI)); Curtosis
+
+ggplot(Sidi, aes(x= BUI)) +
+  geom_histogram(fill = "steelblue", color = "black")
+
+Asimetria <- skew(Sidi$BUI); Asimetria
+Curtosis <- kurtosi((Sidi$BUI)); Curtosis
+
+
+
+```
+
+
+En ambas ciudades la curtosis es positiva, los datos son leptocúrticos y son asimétricos hacia la derecha
+
+
+
+
 
 #### 8.2 CONCLUSIONES
 
@@ -948,22 +980,33 @@ Como podemos ver en ambos gráficos, observamos que entre un (0-10)% de
 BUI no suele haber incendios, esto tiene sentido ya que a menor cantidad
 de material inflamable menor es la posibilidad de generar un incendio.
 
-Además, En ambas regiones, la media de BUI es bastante superior a los
-dias sin fuego por lo que evidentemente el riesgo de incendio aumenta a
-mayor acumuulación de combustible. Por ejemplo, la media de Bejaia en
-dias de fuego es de 24,5 y los dias sin incendios 6.8.
+Además, En ambas regiones, la mediana de BUI es bastante superior a los
+días sin fuego por lo que evidentemente el riesgo de incendio aumenta a
+mayor acumulación de combustible. Por ejemplo, la mediana de Bejaia en
+días de fuego es de 19,2 y los días sin incendios 5.1. Por otro lado,
+en Sidi la mediana de Sidi en días de fuego es de 19,35 y los días sin incendios 6.2.
 
-Por otra parte la varianza alta en los dias de fuego (+200) indica que
+En ambos casos utilizamos la mediana porque la varianza y el coeficiente de variación son muy altas.
+
+
+
+Por otra parte la varianza alta en los días de fuego (+200) indica que
 el BUI suele variar y no hay un valor que se repita constantemente, pero
-siendo habitual que supere el 15%. En cambio, los dias sin incendios hay
+siendo habitual que supere el 15%. En cambio, los días sin incendios hay
 una varianza mas baja(40), lo que nos dice que el BUI se mantiene bajo
 (entre el 0-10%).
+
+En ambas ciudades la curtosis es positiva, lo que indica que los datos son leptocúrticos.
 
 Ahora vamos a añadir las variables ISI(índice de propagación inicial) y
 Ws(velocidad del viento) para comparar las dos al mismo tiempo en un
 gráfico.
 
 #### 8.3 COMPARACIÓN CON ISI Y Ws
+
+
+
+### 9 ISI
 
 Primero vamos con ISI, con los datos de Sidi-Bel_Abbes:
 
@@ -980,7 +1023,6 @@ Isi_media_sf <- Sidi_fire %>%
             DV= mean(abs(ISI- mediana)),
             Q1 = quantile(ISI, prob=0.25),
             Q3 = quantile(ISI, prob=0.75),
-            Curtosis = kurtosi(ISI)
             );Isi_media_sf
 
 Isi_media_snf <- Sidi_not_fire %>% 
@@ -995,7 +1037,6 @@ Isi_media_snf <- Sidi_not_fire %>%
             DV= mean(abs(ISI- mediana)),
             Q1 = quantile(ISI, prob=0.25),
             Q3 = quantile(ISI, prob=0.75),
-            Curtosis = kurtosi(ISI)
             );Isi_media_snf
 
 
@@ -1011,7 +1052,6 @@ Isi_media_bf <- Bejaia_fire %>%
             DV= mean(abs(ISI- mediana)),
             Q1 = quantile(ISI, prob=0.25),
             Q3 = quantile(ISI, prob=0.75),
-            Curtosis = kurtosi(ISI)
             );Isi_media_bf
 
 Isi_media_bnf <- Bejaia_not_fire %>% 
@@ -1026,16 +1066,121 @@ Isi_media_bnf <- Bejaia_not_fire %>%
             DV= mean(abs(ISI- mediana)),
             Q1 = quantile(ISI, prob=0.25),
             Q3 = quantile(ISI, prob=0.75),
-            Curtosis = kurtosi(ISI)
             );Isi_media_bnf
-
-
 
 
 
 ```
 
-Ahora hacemos lo mismo pero para la velocidad del viento:
+
+```{r}
+ggplot(tabla, aes(x= Region, y= ISI, fill= Classes))+
+  geom_boxplot()+
+  labs(title= "Indice de propagación inicial")
+  
+
+```
+
+```{r}
+ggplot(Bejaia, aes(x= ISI)) +
+  geom_histogram(fill = "steelblue", color = "black")
+
+Asimetria <- skew(Bejaia$ISI); Asimetria
+Curtosis <- kurtosi((Bejaia$ISI)); Curtosis
+
+ggplot(Sidi, aes(x= ISI)) +
+  geom_histogram(fill = "steelblue", color = "black")
+
+Asimetria <- skew(Sidi$ISI); Asimetria
+Curtosis <- kurtosi((Sidi$ISI)); Curtosis
+
+```
+
+Tanto en Bejaia como en Sidi, la curtosis es negativa, por lo que los datos son platicúrticos (en Sidi en menor cantidad al acercarse más a 0).
+Por otro lado,los datos son asimetricos hacia la derecha al acercarse al valor 1.
+
+
+
+
+
+En ambas regiones, el ISI es mucho mayor los días que hay incendios que cuando no los hay, ya que el índice de propagación inicial nos indica  la velocidad inicial con la que un incendio comienza a propagarse (siendo mayor con incendios).
+
+Tanto en Bejaia como en Sidi, los valores presentan curtosis negativa, por lo que los datos son platicúrticos.
+
+La asimetria es positiva y vemos que los datos estan distribuidos hacia la derecha para las dos ciudades.  
+La mediana es baja cuando no hay incendios (1-1,3) y alta cuando sí los hay (5-8)
+
+
+
+
+
+También vamos a comentar las conclusiones que veamos sobre el índice de Gini, primero hacemos la tabla:
+
+
+```{r}
+tabla_gini_ISI <- tabla %>% 
+  group_by(ISI) %>% 
+  summarise(ni = n()) %>% 
+  mutate(fi = round(ni / sum(ni), 4)) %>% 
+  mutate(fi_porc = round(100 * fi, 2)) %>% 
+  mutate(Ni = cumsum(ni)) %>% 
+  mutate(Fi = cumsum(fi)) %>% 
+  mutate(pi = cumsum(fi_porc)) %>% 
+  mutate(vi = ISI * ni) %>% 
+  mutate(Vi = cumsum(vi)) %>% 
+  mutate(vi_por = round(100 * vi / sum(vi), 2)) %>% 
+  mutate(qi = cumsum(vi_por))
+tabla_gini_ISI
+```
+Analizando la tabla concluimos que:
+
+-El 49,81% de los datos, los cuales tienen menos de 3,3 de ISI, solo acumulan el 15,64% del total de ISI, esto nos dice que en casi la mitad de los casos en los que el índice de propagación inicial es bajo representan una gran cantidad de los datos de ISI, por lo   los días que ronden en estos valores de ISI (<3,3)no se favorece a la aparición de incendios (lo podemos confirmar mirando el gráfico de cajas).
+
+-El 10% de los casos con mayor ISI (valores superiores a 10) acumulan el 28,85% del total de ISI.
+
+-En el resto de casos, el 40,19% de los valores, los cuales están entre 3,3-10 de ISI acumulan el 55,51% del total de ISI, encaja perfecamente en la mayoría de días que han habido incendios han tenido este rango de ISI.
+
+Como podemos ver, entre 0.0-10 de ISI representan el 90% de los datos y acumulan el 71,15% del total de ISI, por lo que en caso de querer reducir la tabla se puede trabajar muy bien en este rango de valores, ya que son más inusuales los valores superiores a 10.
+
+
+###indice de Gini
+
+Ahora calculamos el Índice de Gini
+
+```{r}
+gini_ISI <- 1 - (sum(tabla_gini_ISI$qi[-length(tabla_gini_ISI$qi)])/ sum(tabla_gini_ISI$pi[-length(tabla_gini_ISI$pi)]))
+gini_ISI
+
+```
+El valor de Gini está por debajo de 0.5, por lo que se acerca ligeramente a la igualdad en comparación a la concentración.
+
+
+Veamos la curva de Lorenz:
+
+```{r}
+curva_lorenz_ISI <- tabla_gini_ISI %>% 
+  select(pi,qi)
+curva_lorenz_ISI
+
+curva_lorenz_ISI <- rbind(c(0,0), curva_lorenz_ISI)
+curva_lorenz_ISI
+
+ggplot(curva_lorenz_ISI, aes(x= pi, y = qi))+
+  geom_line(stat = "identity", color= "blue", size= 1.2, linetype = "dashed")+
+  geom_abline(intercept = 0, slope= 1, color= "red")+
+  labs(title = "Curva de lorenz",
+       x= "%",
+       y= "%acumulado ISI")+
+  theme_minimal()
+```
+La curva de Lorenz se encuentra por debajo de la línea roja, la cual seria la igualdad perfecta, lo que confirma que a pesar de que la distribución del ISI se acerque más a la igualdad sigue teniendo algo de concentración/desigualdad.
+
+
+
+##Ws
+
+
+Analizamos la variable de la velocidad del viento:
 
 ```{r}
 Ws_media_sf <- Sidi_fire %>% 
@@ -1101,7 +1246,50 @@ Ws_media_bnf <- Bejaia_not_fire %>%
 
 
 
+
+
 ```
+
+```{r}
+ggplot(tabla, aes(x= Region, y= Ws, fill= Classes))+
+  geom_boxplot()+
+  labs(title= "Velocida del viento")
+
+
+```
+
+```{r}
+ggplot(Bejaia, aes(x= Ws)) +
+  geom_bar(fill = "steelblue", color = "black")
+
+Asimetria <- skew(Bejaia$Ws); Asimetria
+Curtosis <- kurtosi((Bejaia$Ws)); Curtosis
+
+ggplot(Sidi, aes(x= Ws)) +
+  geom_bar(fill = "steelblue", color = "black")
+Asimetria <- skew(Sidi$Ws); Asimetria
+Curtosis <- kurtosi((Sidi$Ws)); Curtosis
+```
+
+
+La ciudad de Bejaia presenta una curtosis muy cercana a 0, por lo que los datos son mesocúrticos, mientras que en Sidi son leptocúrticos (>5). Por otra parte, las dos ciudades tienen valores similares( cercanos a 0,5), por lo que son ligeramente asimétricos hacia la derecha. 
+
+
+
+
+Los dias con incendios en Bejaia, la media de viento es aproximadamente de 15,6 km/h, mientras que los días sin incendios es un poco superior (16,3 km/h).
+
+Los dias con incendios en Sidi, la media de viento es aproximadamente de 15,07 km/h, mientras que los días sin incendios es un ligeramente inferior (14,81 km/h).
+
+Esto nos muestra que prácticamente todos los días tiene la misma velocidad, lo que indica que no depende de que haya directamente incendios o no Esto lo podemos confirmar porque el coeficiente de variación de ambas regiones se acerca bastante a 0.
+
+Además, la desviación típica es mayor los días sin fuego (>3). 
+
+En Bejaia, los valores presentan curtosis negativa, por lo que los datos son platicúrticos .Mientras que en Sidi es lo contrario, son leptocúrticos,es decir, los datos estan distribuidos de manera menos concentrada que una distribución normal
+
+
+También podemos ver que la velocidad máxima del viento (km/h) en  Bejaia es 26 y en Sidi 29, por lo tanto podemos concluir que estas regiones no tienen viento extremo o fuerte como para ser peligrosos, ya que no superan  ni los 30km/h.
+
 
 Una vez tenemos los datos de ambas variables, las comparamos en un mismo
 gráfico para ver si tienen alguna correlación directa:
@@ -1144,6 +1332,125 @@ incluso aún más en Bejaia(\>0.7), lo que significa que cuando hay una
 mayor cantidad de combustible, el fuego se propaga más rápidamente y nos
 indica que la cantidad de BUI es un factor determinante para la
 propagación del fuego.
+
+
+
+
+
+
+
+Ahora vamos a analizar si el índice meteorológico de incendios (FWI) puede ser predicho. Para ello, vamos a tomar como variable independiente el BUI y como variable dependiente el FWI. Además lo vamos a ver para las dos regiones al mismo tiempo.
+
+
+```{r}
+ggplot(tabla, aes(x = BUI, y = FWI))+
+  geom_point(color="blue")+
+  theme_light()+
+  labs(title="FWI en función de BUI", x="BUI", y="FWI")
+```
+
+Aquí podemos ver que está bastante disperso, sin forma clara de parábola ni curva definida. Eso ya nos dice que el modelo polinómico probablemente no ajustará bien. Para saberlo vamos a comprobarlo:
+
+
+
+Ajustamos el modelo polinómico
+
+```{r}
+POL1 <- lm(FWI ~ I(BUI^2), data= tabla )
+
+summary(POL1)
+```
+
+El modelo es FWI = 3.6795963 +  0.0069885 *BUI^2, R2= 58,36%
+
+
+
+
+
+Hacemos la representación
+
+
+
+```{r}
+tabla$pred_POL1 <- predict(POL1)
+
+ggplot(tabla, aes(x=BUI, y=FWI))+
+  geom_point(color="blue",size=3,alpha=0.6)+
+  geom_line(aes(y=pred_POL1), color="red",size =1)+
+  theme_light()
+```
+
+Como hemos podido ver, el valor de R² es muy bajo, lo que significa que el modelo polinómico explica solo una pequeña parte de la variabilidad de FWI.
+
+Esto indica una relación pobre entre FWI y BUI en este ajuste, tal y como se aprecia en el gráfico.
+
+
+
+
+
+Ahora ajustamos el modelo polinomico 2 
+
+
+
+```{r}
+POL2 <- lm(FWI ~ BUI + I(BUI^2), data= tabla)
+
+summary(POL2)
+```
+
+El modelo ajusta es : FWI= 0.5966+ 7.9082 * BUI - 3.7166 * BUI^2, R2= 75,41%
+
+
+
+El r2 posee un valor más alto, lo que nos indica que el modelo polinómico explicará una mayor parte de la variabilidad de FWI en comparación con el primer modelo.
+
+
+Para ello vamos a representar también gráficamente:
+
+
+
+
+```{r}
+tabla$pred_POL2 <- predict(POL2)
+
+ggplot(tabla, aes(x=BUI, y=FWI))+
+  geom_point(color="blue",size=3,alpha=0.6)+
+  geom_line(aes(y=pred_POL2), color="red",size =1)+
+  theme_light()
+```
+
+Aquí si apreciamos una mejor relación entre FWI y BUI en este ajuste.
+
+
+
+
+Vamos a ver los valore predichos de la variable respuesta( en este caso FWI) y sus errores aleatorios para posteriormente hacer un grafico en el que podamos ver sus residuos.
+
+```{r}
+fit <- lm(FWI ~ BUI, data= tabla); fit
+
+fit$fitted.values
+predict(fit)
+
+residuos <- tabla$FWI - fit$fitted.values ; residuos
+```
+
+
+Hacemos el gráfico incluyeno los residuos que han quedado:
+
+
+```{r}
+
+ggplot(tabla, aes(x=BUI, y=FWI))+
+  geom_point(color="blue",size=3,alpha=0.6)+
+  geom_line(aes(y=pred_POL2), color="red",size =1)+
+  geom_segment(aes(xend= BUI, yend= pred_POL2), col="red", lty= "dashed")+
+  theme_light()
+```
+Los residuos son muy elevados, lo que  nos indica que la curva no consigue aproximarse bien a la variabilidad del FWI.
+
+Lo que confirma que la recta polinómica2 no es un buen modelo para predecir FWI a partir de BUI.
+
 
 ## 9. CONLUSIÓN FINAL
 
