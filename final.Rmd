@@ -955,7 +955,7 @@ ggplot(tabla_absoluta_graf_B, aes(x = Var1, y = Freq, fill = Var2))+
   ylab("Porcentajes")+
   labs(fill = "intervalos de temperatura")+
   theme_minimal()
-  ```
+```
 
 
 Se observa claramente que cuando las temperaturas han sido medias practicamente no han habido incendios y que con temperaturas extremas solo un par de dias no los han habido.
